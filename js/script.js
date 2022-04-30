@@ -45,7 +45,7 @@ const displaySelected = () => {
             let jButton = $(button);
             if (jButton.data('name') === name) {
                 jButton.html("Selected");
-                jButton.removeClass("btn-warning").addClass("btn-success");
+                jButton.removeClass("btn-secondary").addClass("btn-success");
             } else {
                 jButton.html("Select");
                 jButton.removeClass("btn-success").addClass("btn-secondary");
@@ -59,9 +59,9 @@ const displaySelected = () => {
         for (const card of cards) {
             let jCard = $(card);
             if (jCard.data('name') === name) {
-                jCard.addClass("border-success");
+                jCard.removeClass("border-light").addClass("border-success");
             } else {
-                jCard.removeClass("border-success");
+                jCard.removeClass("border-success").addClass("border-light");
             }
         }
     };
