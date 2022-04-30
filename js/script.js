@@ -38,19 +38,37 @@ $('.select-item').click(function (event) {
     displaySelected();
 });
 
-function displaySelected() {
-    let selectedItemName = menuSelection.selectedItem().name;
-    const buttons = document.querySelectorAll('.select-item');
-    for (const button of buttons) {
-        let jButton = $(button);
-        if (jButton.data('name') === selectedItemName) {
-            jButton.html("Selected");
-            jButton.removeClass("btn-warning").addClass("btn-success");
-        } else {
-            jButton.html("Select");
-            jButton.removeClass("btn-success").addClass("btn-warning");
+const displaySelected = () => {
+    const displaySelectedButton = name => {
+        const buttons = document.querySelectorAll('.select-item');
+        for (const button of buttons) {
+            let jButton = $(button);
+            if (jButton.data('name') === name) {
+                jButton.html("Selected");
+                jButton.removeClass("btn-warning").addClass("btn-success");
+            } else {
+                jButton.html("Select");
+                jButton.removeClass("btn-success").addClass("btn-secondary");
+            }
         }
-    }
-}
+    };
+
+    const displaySelectedCard = name => {
+        // TODO select sub items?
+        const cards = document.querySelectorAll('.select-card');
+        for (const card of cards) {
+            let jCard = $(card);
+            if (jCard.data('name') === name) {
+                jCard.addClass("border-success");
+            } else {
+                jCard.removeClass("border-success");
+            }
+        }
+    };
+
+    let selectedItemName = menuSelection.selectedItem().name;
+    displaySelectedButton(selectedItemName);
+    displaySelectedCard(selectedItemName);
+};
 
 displaySelected()

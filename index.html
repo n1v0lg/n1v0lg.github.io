@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Wurst</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-            integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
             crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/style.css">
 
 </head>
 <body>
 
-<nav class="navbar navbar-inverse bg-inverse fixed-top bg-faded navbar-right">
+<nav class="navbar navbar-dark bg-dark fixed-top">
     <ul class="navbar-nav ml-auto">
         <div class="row">
             <div class="col">
@@ -30,52 +30,33 @@
 </nav>
 
 <div class="container">
-    <div class="row">
-        <div class="col">
-            <div class="card" style="width: 20rem;">
-                <img class="card-img-top" src="./images/wurst1.JPG" alt="Wurst 1">
-                <div class="card-block">
-                    <h4 class="card-title">Wurst 1</h4>
-                    <p class="card-text">This is a wurst.</p>
-                    <a href="#" data-name="Wurst 1" class="select-item btn btn-success">Select</a>
-                </div>
+    <div class="card" style="width: 64rem;">
+        <h5 class="card-header">Featured dish</h5>
+        <img class="card-img-top" src="images/wurst1.JPG" alt="">
+        <div class="card-body">
+            <h5 class="card-title">Brimstone Dragonfly Ragù</h5>
+            <p class="card-text">Smokey and daring. Brimstone is organic, gluten-free.</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card-deck" style="width: 64rem;">
+        <div class="card border-success mb-3 select-card text-center" data-name="Wurst 1">
+            <div class="card-body">
+                <p class="card-text">This is a wurst.</p>
+                <a href="#" data-name="Wurst 1" class="select-item btn btn-block btn-success">Select</a>
             </div>
         </div>
-        <div class="col">
-            <div class="card" style="width: 20rem;">
-                <img class="card-img-top" src="./images/wurst2.JPG" alt="Wurst 2">
-                <div class="card-block">
-                    <h4 class="card-title">Wurst 2</h4>
-                    <p class="card-text">This is another wurst.</p>
-                    <a href="#" data-name="Wurst 2" class="select-item btn btn-warning">Select</a>
-                </div>
+        <div class="card border-secondary mb-3 select-card text-center" data-name="Wurst 2">
+            <div class="card-body">
+                <p class="card-text">This is also a wurst.</p>
+                <a href="#" data-name="Wurst 2" class="select-item btn btn-block btn-secondary">Select</a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="cart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Cart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table class="show-cart table">
-
-                </table>
-                <div>Total price: $<span class="total-cart"></span></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Order now</button>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 <script src="js/script.js"></script>
 </html>
