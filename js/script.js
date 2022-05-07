@@ -6,6 +6,7 @@ const menuSelection = (function () {
     }
 
     function saveSelectedItem() {
+        // https://survey.qualtrics.com/jfe/form/SID=SV_1234?Source=Facebook
         sessionStorage.setItem('selectedItem', JSON.stringify(selectedItem));
     }
 
@@ -36,6 +37,13 @@ $('.select-item').click(function (event) {
     const name = $(this).data('name');
     menuSelection.selectItem(name);
     displaySelected();
+});
+
+$('.checkout').click(function (event) {
+    event.preventDefault();
+    let selectedItemName = menuSelection.selectedItem().name;
+    const win = window.open('https://survey.qualtrics.com/jfe/form/SID=SV_1234?Selected=' + selectedItemName, '_blank');
+    win.focus();
 });
 
 const displaySelected = () => {
