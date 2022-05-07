@@ -1,12 +1,15 @@
+const isPreviewMode = false;
+const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_8J6MGzD4AvRUfOu?Q_CHL=preview&Q_SurveyVersionID=current&SelectedItem=';
+const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_8J6MGzD4AvRUfOu?SelectedItem=';
+
 const menuSelection = (function () {
-    let selectedItem = new Item("Wurst 1");
+    let selectedItem = new Item("Wurst1");
 
     function Item(name) {
         this.name = name;
     }
 
     function saveSelectedItem() {
-        // https://survey.qualtrics.com/jfe/form/SID=SV_1234?Source=Facebook
         sessionStorage.setItem('selectedItem', JSON.stringify(selectedItem));
     }
 
@@ -41,10 +44,19 @@ $('.select-item').click(function (event) {
 
 $('.checkout').click(function (event) {
     event.preventDefault();
-    let selectedItemName = menuSelection.selectedItem().name;
-    const win = window.open('https://survey.qualtrics.com/jfe/form/SID=SV_1234?Selected=' + selectedItemName, '_blank');
+    const targetUrl = getTargetUrl();
+    const selectedItemName = menuSelection.selectedItem().name;
+    const win = window.open(targetUrl + selectedItemName, '_self');
     win.focus();
 });
+
+const getTargetUrl = () => {
+    if (isPreviewMode) {
+        return qualtrixUrlPreviewMode;
+    } else {
+        return qualtrixUrl;
+    }
+}
 
 const displaySelected = () => {
     const displaySelectedButton = name => {
