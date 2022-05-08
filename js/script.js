@@ -1,6 +1,6 @@
-const isPreviewMode = false;
-const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_8J6MGzD4AvRUfOu?Q_CHL=preview&Q_SurveyVersionID=current&SelectedItem=';
-const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_8J6MGzD4AvRUfOu?SelectedItem=';
+const isPreviewMode = true;
+const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_egGiorwgqpcyPCm?Q_CHL=preview&Q_SurveyVersionID=current&SelectedItem=';
+const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_egGiorwgqpcyPCm?SelectedItem=';
 
 const menuSelection = (function () {
     let selectedItem = new Item("Wurst1");
