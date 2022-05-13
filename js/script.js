@@ -2,10 +2,38 @@ const isPreviewMode = true;
 const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_egGiorwgqpcyPCm?Q_CHL=preview&Q_SurveyVersionID=current&SelectedItem=';
 const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_egGiorwgqpcyPCm?SelectedItem=';
 
-const menuSelection = (function () {
-    let selectedItem = new Item("Wurst1");
+// Selection is dynamic
+const option1Selector = "Option1"
+const option2Selector = "Option2"
 
-    function Item(name) {
+const Framing = {
+    Taste: 'Taste',
+    Sustainability: 'Sustainability',
+    // TODO
+    None: 'None'
+};
+
+const Type = {
+    Plant: 'Plant',
+    Meat: 'Meat'
+};
+
+const initialSelected = option1Selector;
+const props = {};
+props[option1Selector] = {
+    type: Type.Plant,
+    framing: Framing.Taste
+};
+props[option2Selector] = {
+    type: Type.Meat,
+    framing: Framing.None
+};
+
+const menuSelection = (function () {
+    let selectedItem = new Item(initialSelected, "Wurst1");
+
+    function Item(id, name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -23,8 +51,8 @@ const menuSelection = (function () {
 
     const obj = {};
 
-    obj.selectItem = function (name) {
-        selectedItem = new Item(name);
+    obj.selectItem = function (id, name) {
+        selectedItem = new Item(id, name);
         saveSelectedItem();
     }
 
@@ -37,8 +65,9 @@ const menuSelection = (function () {
 
 $('.select-item').click(function (event) {
     event.preventDefault();
+    const id = $(this).data('id');
     const name = $(this).data('name');
-    menuSelection.selectItem(name);
+    menuSelection.selectItem(id, name);
     displaySelected();
 });
 
@@ -59,11 +88,11 @@ const getTargetUrl = () => {
 }
 
 const displaySelected = () => {
-    const displaySelectedButton = name => {
+    const displaySelectedButton = id => {
         const buttons = document.querySelectorAll('.select-item');
         for (const button of buttons) {
             let jButton = $(button);
-            if (jButton.data('name') === name) {
+            if (jButton.data('id') === id) {
                 jButton.html("Selected");
                 jButton.removeClass("btn-secondary").addClass("btn-success");
             } else {
@@ -73,12 +102,11 @@ const displaySelected = () => {
         }
     };
 
-    const displaySelectedCard = name => {
-        // TODO select sub items?
+    const displaySelectedCard = id => {
         const cards = document.querySelectorAll('.select-card');
         for (const card of cards) {
             let jCard = $(card);
-            if (jCard.data('name') === name) {
+            if (jCard.data('id') === id) {
                 jCard.removeClass("border-light").addClass("border-success");
             } else {
                 jCard.removeClass("border-success").addClass("border-light");
@@ -86,9 +114,15 @@ const displaySelected = () => {
         }
     };
 
-    let selectedItemName = menuSelection.selectedItem().name;
-    displaySelectedButton(selectedItemName);
-    displaySelectedCard(selectedItemName);
+    let selectedItemId = menuSelection.selectedItem().id;
+    displaySelectedButton(selectedItemId);
+    displaySelectedCard(selectedItemId);
 };
 
+const displayOption = (id, type, framing) => {
+    
+};
+
+const prop = props[option1Selector]
+displayOption(option1Selector, prop.type, prop.framing);
 displaySelected()
