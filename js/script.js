@@ -2,7 +2,6 @@ const isPreviewMode = true;
 const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_egGiorwgqpcyPCm?Q_CHL=preview&Q_SurveyVersionID=current&SelectedItem=';
 const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_egGiorwgqpcyPCm?SelectedItem=';
 
-// Selection is dynamic
 const option1Selector = "Option1"
 const option2Selector = "Option2"
 
@@ -26,7 +25,7 @@ props[option1Selector] = {
 };
 props[option2Selector] = {
     type: Type.Meat,
-    framing: Framing.None
+    framing: Framing.Taste
 };
 
 const menuSelection = (function () {
@@ -124,23 +123,30 @@ const displaySelected = () => {
     displaySelectedCard(selectedItemId);
 };
 
-const displayOption = (id, type, framing) => {
-    const card = document.querySelector('[data-id=' + getCardId(id) + ']');
-    const labelText = card.querySelector('[data-id=label]');
-    labelText.text = type + ' ' + displayFraming(framing);
-};
+const displayOptions = () => {
+    const displayOption = (id, type, framing) => {
+        const card = document.querySelector('[data-id=' + getCardId(id) + ']');
+        const labelText = card.querySelector('[data-id=label]');
+        $(labelText).html(type + ' ' + displayFraming(framing));
+    };
 
-const displayFraming = (framing) => {
-    switch (framing) {
-        case Framing.Taste:
-            return '<span className="badge badge-info">Chef\'s pick</span>'
-        case Framing.Sustainability:
-            return '<span className="badge badge-info">Planets\'s pick</span>'
-        default:
-            return ''
+    const displayFraming = (framing) => {
+        switch (framing) {
+            case Framing.Taste:
+                // TODO hack hack hack
+                return "<span class='badge badge-info'>Chef's pick</span>"
+            case Framing.Sustainability:
+                return "<span class='badge badge-info'>Planet's pick</span>"
+            default:
+                return ''
+        }
     }
+
+    const option1 = props[option1Selector]
+    displayOption(option1Selector, option1.type, option1.framing);
+    const option2 = props[option2Selector]
+    displayOption(option2Selector, option2.type, option2.framing);
 }
 
-const prop = props[option1Selector]
-displayOption(option1Selector, prop.type, prop.framing);
+displayOptions()
 displaySelected()
