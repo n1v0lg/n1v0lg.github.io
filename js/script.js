@@ -65,10 +65,10 @@ $('.select-item').click(function (event) {
     displaySelected();
 });
 
-// TODO fix me
 $('.checkout').click(function (event) {
     event.preventDefault();
     const targetUrl = getTargetUrl();
+    // TODO fix me
     const selectedItemName = menuSelection.selectedItem().name;
     const win = window.open(targetUrl + selectedItemName, '_self');
     win.focus();
@@ -122,22 +122,30 @@ const displayOptions = (props) => {
     const displayOption = (id, type, framing) => {
         const card = document.querySelector('[data-id=' + getCardId(id) + ']');
         const labelText = card.querySelector('[data-id=label]');
-        $(labelText).html(displayType(type) + ' ' + displayFraming(framing));
+        $(labelText).html(typeHtml(type) + ' ' + framingHtml(framing));
+        const descriptionText = card.querySelector('[data-id=description]');
+        $(descriptionText).html(descriptionHtml(type));
     };
 
-    const displayType = (type) => {
-        switch (type) {
-            case Type.Plant:
-                return 'Veggie'
-            case Type.Meat:
-                return 'Fleisch'
+    const typeHtml = (type) => {
+        if (type === Type.Plant) {
+            return 'Veggie'
+        } else if (type === Type.Meat) {
+            return 'Fleisch'
         }
     }
 
-    const displayFraming = (framing) => {
+    const descriptionHtml = (type) => {
+        if (type === Type.Plant) {
+            return 'mit pflanzlicher Bratwurst'
+        } else if (type === Type.Meat) {
+            return 'mit Schweinebratwurst'
+        }
+    }
+
+    const framingHtml = (framing) => {
         switch (framing) {
             case Framing.Taste:
-                // TODO hack hack hack
                 return "<span class='badge badge-info'>Chef's pick</span>"
             case Framing.Sustainability:
                 return "<span class='badge badge-info'>Planet's pick</span>"
@@ -215,10 +223,12 @@ const getParameterByName = (name, url = window.location.href) => {
 };
 
 choiceScenario = getParameterByName('choiceScenario')
+// TODO empty choice scenario
 let props = setPropsFromChoiceScenario(choiceScenario);
 displayOptions(props)
 console.log(props)
 if (props.selected !== null) {
+    console.log("why JS")
     menuSelection.selectItem(props.selected);
 }
 displaySelected()
