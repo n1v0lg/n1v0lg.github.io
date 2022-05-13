@@ -5,6 +5,11 @@ const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_egGiorw
 const option1Selector = "Option1"
 const option2Selector = "Option2"
 
+const ChoiceScenario = {
+    A: 'A',
+    B: 'B'
+}
+
 const Framing = {
     Taste: 'Taste',
     Sustainability: 'Sustainability',
@@ -146,16 +151,41 @@ const displayOptions = (props) => {
     displayOption(option2Selector, option2.type, option2.framing);
 }
 
-menuSelection.selectItem(option1Selector);
-const props = {};
-props[option1Selector] = {
-    type: Type.Plant,
-    framing: Framing.Taste
-};
-props[option2Selector] = {
-    type: Type.Meat,
-    framing: Framing.None
+function plantDefaultTasteFraming() {
+    const props = {};
+    props[option1Selector] = {
+        type: Type.Plant,
+        framing: Framing.Taste
+    };
+    props[option2Selector] = {
+        type: Type.Meat,
+        framing: Framing.None
+    };
+    return props;
+}
+
+function plantDefaultSustainabilityFraming() {
+    const props = {};
+    props[option1Selector] = {
+        type: Type.Plant,
+        framing: Framing.Sustainability
+    };
+    props[option2Selector] = {
+        type: Type.Meat,
+        framing: Framing.None
+    };
+    return props;
+}
+
+const setPropsFromChoiceScenario = (choiceScenario) => {
+    switch (choiceScenario) {
+        case ChoiceScenario.A:
+            return plantDefaultTasteFraming();
+        case ChoiceScenario.B:
+            return plantDefaultSustainabilityFraming();
+    }
 };
 
-displayOptions(props)
+displayOptions(setPropsFromChoiceScenario(ChoiceScenario.A))
+menuSelection.selectItem(option1Selector);
 displaySelected()
