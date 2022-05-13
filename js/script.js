@@ -88,9 +88,8 @@ const getTargetUrl = () => {
     }
 }
 
-function getCardId(id) {
-    return 'Card' + id;
-}
+// TODO hack hack hack
+const getCardId = id => 'Card' + id;
 
 const displaySelected = () => {
     const displaySelectedButton = id => {
@@ -126,10 +125,21 @@ const displaySelected = () => {
 };
 
 const displayOption = (id, type, framing) => {
-    // TODO hack hack hack
     const card = document.querySelector('[data-id=' + getCardId(id) + ']');
-    console.log(card)
+    const labelText = card.querySelector('[data-id=label]');
+    labelText.text = type + ' ' + displayFraming(framing);
 };
+
+const displayFraming = (framing) => {
+    switch (framing) {
+        case Framing.Taste:
+            return '<span className="badge badge-info">Chef\'s pick</span>'
+        case Framing.Sustainability:
+            return '<span className="badge badge-info">Planets\'s pick</span>'
+        default:
+            return ''
+    }
+}
 
 const prop = props[option1Selector]
 displayOption(option1Selector, prop.type, prop.framing);
