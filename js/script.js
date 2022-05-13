@@ -7,7 +7,8 @@ const option2Selector = "Option2"
 
 const ChoiceScenario = {
     A: 'A',
-    B: 'B'
+    B: 'B',
+    C: 'C'
 }
 
 const Framing = {
@@ -151,6 +152,20 @@ const displayOptions = (props) => {
     displayOption(option2Selector, option2.type, option2.framing);
 }
 
+function noDefaultNoFraming() {
+    const props = {};
+    props[option1Selector] = {
+        type: Type.Plant,
+        framing: Framing.None
+    };
+    props[option2Selector] = {
+        type: Type.Meat,
+        framing: Framing.None
+    };
+    props["selected"] = null;
+    return props;
+}
+
 function plantDefaultTasteFraming() {
     const props = {};
     props[option1Selector] = {
@@ -161,6 +176,7 @@ function plantDefaultTasteFraming() {
         type: Type.Meat,
         framing: Framing.None
     };
+    props["selected"] = option1Selector;
     return props;
 }
 
@@ -174,14 +190,17 @@ function plantDefaultSustainabilityFraming() {
         type: Type.Meat,
         framing: Framing.None
     };
+    props["selected"] = option1Selector;
     return props;
 }
 
 const setPropsFromChoiceScenario = (choiceScenario) => {
     switch (choiceScenario) {
         case ChoiceScenario.A:
-            return plantDefaultTasteFraming();
+            return noDefaultNoFraming();
         case ChoiceScenario.B:
+            return plantDefaultTasteFraming();
+        case ChoiceScenario.C:
             return plantDefaultSustainabilityFraming();
     }
 };
@@ -196,6 +215,10 @@ const getParameterByName = (name, url = window.location.href) => {
 };
 
 choiceScenario = getParameterByName('choiceScenario')
-displayOptions(setPropsFromChoiceScenario(choiceScenario))
-menuSelection.selectItem(option1Selector);
+let props = setPropsFromChoiceScenario(choiceScenario);
+displayOptions(props)
+console.log(props)
+if (props.selected !== null) {
+    menuSelection.selectItem(props.selected);
+}
 displaySelected()
