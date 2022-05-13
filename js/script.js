@@ -17,19 +17,8 @@ const Type = {
     Meat: 'Meat'
 };
 
-const initialSelected = option1Selector;
-const props = {};
-props[option1Selector] = {
-    type: Type.Plant,
-    framing: Framing.Taste
-};
-props[option2Selector] = {
-    type: Type.Meat,
-    framing: Framing.Taste
-};
-
 const menuSelection = (function () {
-    let selectedItem = new Item(initialSelected, "Wurst1");
+    let selectedItem;
 
     function Item(id, name) {
         this.id = id;
@@ -123,12 +112,21 @@ const displaySelected = () => {
     displaySelectedCard(selectedItemId);
 };
 
-const displayOptions = () => {
+const displayOptions = (props) => {
     const displayOption = (id, type, framing) => {
         const card = document.querySelector('[data-id=' + getCardId(id) + ']');
         const labelText = card.querySelector('[data-id=label]');
-        $(labelText).html(type + ' ' + displayFraming(framing));
+        $(labelText).html(displayType(type) + ' ' + displayFraming(framing));
     };
+
+    const displayType = (type) => {
+        switch (type) {
+            case Type.Plant:
+                return 'Veggie'
+            case Type.Meat:
+                return 'Fleisch'
+        }
+    }
 
     const displayFraming = (framing) => {
         switch (framing) {
@@ -148,5 +146,16 @@ const displayOptions = () => {
     displayOption(option2Selector, option2.type, option2.framing);
 }
 
-displayOptions()
+menuSelection.selectItem(option1Selector);
+const props = {};
+props[option1Selector] = {
+    type: Type.Plant,
+    framing: Framing.Taste
+};
+props[option2Selector] = {
+    type: Type.Meat,
+    framing: Framing.None
+};
+
+displayOptions(props)
 displaySelected()
