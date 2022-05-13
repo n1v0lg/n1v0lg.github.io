@@ -26,9 +26,8 @@ const Type = {
 const menuSelection = (function () {
     let selectedItem;
 
-    function Item(id, name) {
+    function Item(id) {
         this.id = id;
-        this.name = name;
     }
 
     function saveSelectedItem() {
@@ -45,8 +44,8 @@ const menuSelection = (function () {
 
     const obj = {};
 
-    obj.selectItem = function (id, name) {
-        selectedItem = new Item(id, name);
+    obj.selectItem = function (id) {
+        selectedItem = new Item(id);
         saveSelectedItem();
     }
 
@@ -60,8 +59,7 @@ const menuSelection = (function () {
 $('.select-item').click(function (event) {
     event.preventDefault();
     const id = $(this).data('id');
-    const name = $(this).data('name');
-    menuSelection.selectItem(id, name);
+    menuSelection.selectItem(id);
     displaySelected();
 });
 
@@ -69,8 +67,8 @@ $('.checkout').click(function (event) {
     event.preventDefault();
     const targetUrl = getTargetUrl();
     // TODO fix me
-    const selectedItemName = menuSelection.selectedItem().name;
-    const win = window.open(targetUrl + selectedItemName, '_self');
+    const selectedItemId = menuSelection.selectedItem().id;
+    const win = window.open(targetUrl + selectedItemId, '_self');
     win.focus();
 });
 
@@ -102,10 +100,9 @@ const displaySelected = () => {
 
     const displaySelectedCard = id => {
         const cards = document.querySelectorAll('.select-card');
-        const cardId = getCardId(id);
         for (const card of cards) {
             let jCard = $(card);
-            if (jCard.data('id') === cardId) {
+            if (jCard.data('id') === getCardId(id)) {
                 jCard.removeClass("border-light").addClass("border-success");
             } else {
                 jCard.removeClass("border-success").addClass("border-light");
@@ -121,10 +118,10 @@ const displaySelected = () => {
 const displayOptions = (props) => {
     const displayOption = (id, type, framing) => {
         const card = document.querySelector('[data-id=' + getCardId(id) + ']');
-        const labelText = card.querySelector('[data-id=label]');
-        $(labelText).html(typeHtml(type) + ' ' + framingHtml(framing));
-        const descriptionText = card.querySelector('[data-id=description]');
-        $(descriptionText).html(descriptionHtml(type));
+        const label = card.querySelector('[data-id=label]');
+        $(label).html(typeHtml(type) + ' ' + framingHtml(framing));
+        const description = card.querySelector('[data-id=description]');
+        $(description).html(descriptionHtml(type));
     };
 
     const typeHtml = (type) => {
@@ -215,7 +212,7 @@ const setPropsFromChoiceScenario = (choiceScenario) => {
 
 const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[\[\]]/g, '\\$&');
-    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
         results = regex.exec(url);
     if (!results) return null;
     if (!results[2]) return '';
@@ -226,9 +223,7 @@ choiceScenario = getParameterByName('choiceScenario')
 // TODO empty choice scenario
 let props = setPropsFromChoiceScenario(choiceScenario);
 displayOptions(props)
-console.log(props)
 if (props.selected !== null) {
-    console.log("why JS")
     menuSelection.selectItem(props.selected);
 }
 displaySelected()
