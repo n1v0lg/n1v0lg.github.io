@@ -13,7 +13,8 @@ const ChoiceScenario = {
 
 const Framing = {
     Taste: 'Taste',
-    Sustainability: 'Sustainability'
+    Sustainability: 'Sustainability',
+    None: 'None'
 };
 
 const Type = {
