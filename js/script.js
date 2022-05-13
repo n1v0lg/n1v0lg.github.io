@@ -22,11 +22,13 @@ const Type = {
     Meat: 'Meat'
 };
 
-const menuSelection = (function () {
+const itemSelection = (function () {
     let selectedItem;
 
-    function Item(id) {
-        this.id = id;
+    class Item {
+        constructor(id) {
+            this.id = id;
+        }
     }
 
     function saveSelectedItem() {
@@ -43,13 +45,19 @@ const menuSelection = (function () {
 
     const obj = {};
 
-    obj.selectItem = function (id) {
+    obj.selectItem = id => {
         selectedItem = new Item(id);
         saveSelectedItem();
     }
 
-    obj.selectedItem = function () {
-        return selectedItem;
+    obj.selectedItem = () => selectedItem
+
+    obj.storeChoiceScenarioProps = (props) => {
+        sessionStorage.setItem('props', JSON.stringify(props));
+    }
+
+    obj.choiceScenarioProps = () => {
+        return JSON.parse(sessionStorage.getItem('props'))
     }
 
     return obj;
@@ -58,15 +66,14 @@ const menuSelection = (function () {
 $('.select-item').click(function (event) {
     event.preventDefault();
     const id = $(this).data('id');
-    menuSelection.selectItem(id);
+    itemSelection.selectItem(id);
     displaySelected();
 });
 
 $('.checkout').click(function (event) {
     event.preventDefault();
     const targetUrl = getTargetUrl();
-    // TODO fix me
-    const selectedItemId = menuSelection.selectedItem().id;
+    const selectedItemId = itemSelection.selectedItem().id;
     const win = window.open(targetUrl + selectedItemId, '_self');
     win.focus();
 });
@@ -109,7 +116,7 @@ const displaySelected = () => {
         }
     };
 
-    let selectedItemId = menuSelection.selectedItem().id;
+    let selectedItemId = itemSelection.selectedItem().id;
     displaySelectedButton(selectedItemId);
     displaySelectedCard(selectedItemId);
 };
@@ -198,7 +205,7 @@ function plantDefaultSustainabilityFraming() {
     return props;
 }
 
-const setPropsFromChoiceScenario = (choiceScenario) => {
+const setPropsForChoiceScenario = (choiceScenario) => {
     switch (choiceScenario) {
         case ChoiceScenario.A:
             return noDefaultNoFraming();
@@ -219,10 +226,11 @@ const getParameterByName = (name, url = window.location.href) => {
 };
 
 choiceScenario = getParameterByName('choiceScenario')
-// TODO empty choice scenario
-let props = setPropsFromChoiceScenario(choiceScenario);
+// TODO empty/unknown choice scenario
+let props = setPropsForChoiceScenario(choiceScenario);
+itemSelection.storeChoiceScenarioProps(props);
 displayOptions(props)
 if (props.selected !== null) {
-    menuSelection.selectItem(props.selected);
+    itemSelection.selectItem(props.selected);
 }
 displaySelected()
