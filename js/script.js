@@ -71,6 +71,7 @@ $('.select-item').click(function (event) {
     displaySelected();
 });
 
+// TODO fix me
 $('.checkout').click(function (event) {
     event.preventDefault();
     const targetUrl = getTargetUrl();
@@ -85,6 +86,10 @@ const getTargetUrl = () => {
     } else {
         return qualtrixUrl;
     }
+}
+
+function getCardId(id) {
+    return 'Card' + id;
 }
 
 const displaySelected = () => {
@@ -104,9 +109,10 @@ const displaySelected = () => {
 
     const displaySelectedCard = id => {
         const cards = document.querySelectorAll('.select-card');
+        const cardId = getCardId(id);
         for (const card of cards) {
             let jCard = $(card);
-            if (jCard.data('id') === id) {
+            if (jCard.data('id') === cardId) {
                 jCard.removeClass("border-light").addClass("border-success");
             } else {
                 jCard.removeClass("border-success").addClass("border-light");
@@ -120,7 +126,9 @@ const displaySelected = () => {
 };
 
 const displayOption = (id, type, framing) => {
-    
+    // TODO hack hack hack
+    const card = document.querySelector('[data-id=' + getCardId(id) + ']');
+    console.log(card)
 };
 
 const prop = props[option1Selector]
