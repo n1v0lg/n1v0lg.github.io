@@ -5,6 +5,8 @@ const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_egGiorw
 const option1Selector = "Option1"
 const option2Selector = "Option2"
 
+const choiceScenarioQueryParam = 'scenario';
+
 const ChoiceScenario = {
     A: 'A',
     B: 'B',
@@ -163,7 +165,7 @@ const displayOptions = (props) => {
     displayOption(option2Selector, option2.type, option2.framing)
 }
 
-function noDefaultNoFraming() {
+const noDefaultNoFraming = () => {
     const props = {}
     props[option1Selector] = {
         type: Type.Plant,
@@ -175,9 +177,9 @@ function noDefaultNoFraming() {
     }
     props["selected"] = null
     return props
-}
+};
 
-function plantDefaultTasteFraming() {
+const plantDefaultTasteFraming = () => {
     const props = {}
     props[option1Selector] = {
         type: Type.Plant,
@@ -189,9 +191,9 @@ function plantDefaultTasteFraming() {
     }
     props["selected"] = option1Selector
     return props
-}
+};
 
-function plantDefaultSustainabilityFraming() {
+const plantDefaultSustainabilityFraming = () => {
     const props = {}
     props[option1Selector] = {
         type: Type.Plant,
@@ -203,7 +205,7 @@ function plantDefaultSustainabilityFraming() {
     }
     props["selected"] = option1Selector
     return props
-}
+};
 
 const setPropsForChoiceScenario = (choiceScenario) => {
     switch (choiceScenario) {
@@ -225,7 +227,7 @@ const getParameterByName = (name, url = window.location.href) => {
     return decodeURIComponent(results[2].replace(/\+/g, ' '))
 }
 
-choiceScenario = getParameterByName('choiceScenario')
+choiceScenario = getParameterByName(choiceScenarioQueryParam)
 // TODO empty/unknown choice scenario
 const props = setPropsForChoiceScenario(choiceScenario)
 itemSelection.storeChoiceScenarioProps(props)
