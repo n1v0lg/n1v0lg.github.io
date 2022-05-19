@@ -10,7 +10,9 @@ const choiceScenarioQueryParam = 'scenario';
 const ChoiceScenario = {
     A: 'A',
     B: 'B',
-    C: 'C'
+    C: 'C',
+    D: 'D',
+    E: 'E'
 }
 
 const Framing = {
@@ -153,7 +155,7 @@ const displayOptions = (props) => {
             case Framing.Taste:
                 return "<span class='badge badge-info'>Chef's pick</span>"
             case Framing.Sustainability:
-                return "<span class='badge badge-info'>Planet's pick</span>"
+                return "<span class='badge badge-info'>Gut fürs Klima</span>"
             default:
                 return ''
         }
@@ -207,6 +209,34 @@ const plantDefaultSustainabilityFraming = () => {
     return props
 };
 
+const noDefaultTasteFraming = () => {
+    const props = {}
+    props[option1Selector] = {
+        type: Type.Plant,
+        framing: Framing.Taste
+    }
+    props[option2Selector] = {
+        type: Type.Meat,
+        framing: Framing.None
+    }
+    props["selected"] = null
+    return props
+};
+
+const noDefaultSustainabilityFraming = () => {
+    const props = {}
+    props[option1Selector] = {
+        type: Type.Plant,
+        framing: Framing.Sustainability
+    }
+    props[option2Selector] = {
+        type: Type.Meat,
+        framing: Framing.None
+    }
+    props["selected"] = null
+    return props
+};
+
 const setPropsForChoiceScenario = (choiceScenario) => {
     switch (choiceScenario) {
         case ChoiceScenario.A:
@@ -215,6 +245,10 @@ const setPropsForChoiceScenario = (choiceScenario) => {
             return plantDefaultTasteFraming()
         case ChoiceScenario.C:
             return plantDefaultSustainabilityFraming()
+        case ChoiceScenario.D:
+            return noDefaultTasteFraming()
+        case ChoiceScenario.E:
+            return noDefaultSustainabilityFraming()
     }
 }
 
