@@ -5,7 +5,7 @@ const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_egGiorw
 const option1Selector = "Option1"
 const option2Selector = "Option2"
 
-const choiceScenarioQueryParam = 'scenario';
+const choiceScenarioQueryParam = 'choiceScenario';
 
 const ChoiceScenario = {
     A: 'A',
@@ -78,9 +78,23 @@ $('.checkout').click(function (event) {
     event.preventDefault()
     const targetUrl = getTargetUrl()
     const selectedItemId = itemSelection.selectedItem().id
-    const win = window.open(targetUrl + selectedItemId, '_self')
+    const win = window.open(targetUrl + toQualtrixParam(selectedItemId), '_self')
     win.focus()
 })
+
+const toQualtrixParam = (id) => {
+    // TODO this will have to change if meat can come first
+    switch (id) {
+        case option1Selector:
+            return "Veggie"
+        case option2Selector:
+            return "Meat"
+        default:
+            // TODO alert?
+            console.log("Bad id", id)
+            return ""
+    }
+}
 
 const getTargetUrl = () => {
     if (isPreviewMode) {
