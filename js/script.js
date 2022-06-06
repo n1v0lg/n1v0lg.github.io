@@ -11,11 +11,23 @@ const locale = 'en';
 const translations = {
     'en': {
         'dish-name': 'Mezze-sausage and onion skewers',
-        'dish-description': 'with Greek pasta salad and tomato sauce'
+        'dish-description': 'with Greek pasta salad and tomato sauce',
+        'meat': 'Meat',
+        'veggie': 'Veggie',
+        'sustainability-label': "Planet's pick",
+        'taste-label': "Chef's pick",
+        'veggie-sausage': 'with plant-based sausage',
+        'meat-sausage': 'with pork sausage',
     },
     "de": {
         'dish-name': 'Spieße mit Mezze-Würstchen und Zwiebel',
-        'dish-description': 'dazu griechischer Pastasalat und tomatige Sauße'
+        'dish-description': 'dazu griechischer Pastasalat und tomatige Sauße',
+        'meat': 'Fleisch',
+        'veggie': 'Veggie',
+        'sustainability-label': "Gut fürs Klima",
+        'taste-label': "Chef's pick",
+        'veggie-sausage': 'mit pflanzlicher Bratwurst',
+        'meat-sausage': 'mit Schweinebratwurst',
     },
 };
 
@@ -162,26 +174,28 @@ const displayOptions = (props) => {
 
     const typeHtml = (type) => {
         if (type === Type.Veggie) {
-            return 'Veggie'
+            return translations[locale]["veggie"]
         } else if (type === Type.Meat) {
-            return 'Fleisch'
+            return translations[locale]["meat"]
         }
     }
 
     const descriptionHtml = (type) => {
+        // TODO fix translations
         if (type === Type.Veggie) {
-            return 'mit pflanzlicher Bratwurst'
+            return translations[locale]["veggie-sausage"]
         } else if (type === Type.Meat) {
-            return 'mit Schweinebratwurst'
+            return translations[locale]["meat-sausage"]
         }
     }
 
     const framingHtml = (framing) => {
+        // TODO fix translations
         switch (framing) {
             case Framing.Taste:
-                return "<span class='badge badge-info'>Chef's pick</span>"
+                return "<span class='badge badge-info'>" + translations[locale]["taste-label"] + "</span>"
             case Framing.Sustainability:
-                return "<span class='badge badge-info'>Gut fürs Klima</span>"
+                return "<span class='badge badge-info'>" + translations[locale]["sustainability-label"] + "</span>"
             default:
                 return ''
         }
@@ -275,6 +289,9 @@ const setPropsForChoiceScenario = (choiceScenario) => {
             return noDefaultTasteFraming()
         case ChoiceScenario.E:
             return noDefaultSustainabilityFraming()
+        default:
+            console.log("Unknown choice scenario")
+            return noDefaultNoFraming()
     }
 }
 
@@ -294,7 +311,6 @@ const localize = () => {
 }
 
 const localizeElement = element => {
-    console.log(element)
     const key = element.getAttribute("data-i18n-key");
     element.innerText = translations[locale][key];
 };
@@ -308,7 +324,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (props.selected !== null) {
         itemSelection.selectItem(props.selected)
     }
+    // TODO fix me
+    try {
+        displaySelected();
+    } catch (error) {
+        console.error(error);
+    }
     localize()
-    displaySelected()
 });
 
