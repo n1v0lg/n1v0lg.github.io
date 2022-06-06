@@ -22,8 +22,12 @@ const Framing = {
 }
 
 const Type = {
-    Plant: 'Plant',
+    Veggie: 'Veggie',
     Meat: 'Meat'
+}
+
+const Terms = {
+
 }
 
 const itemSelection = (function () {
@@ -35,13 +39,13 @@ const itemSelection = (function () {
         }
     }
 
-    function saveSelectedItem() {
+    const saveSelectedItem = () => {
         sessionStorage.setItem('selectedItem', JSON.stringify(selectedItem))
-    }
+    };
 
-    function load() {
+    const load = () => {
         selectedItem = JSON.parse(sessionStorage.getItem('selectedItem'))
-    }
+    };
 
     if (sessionStorage.getItem("selectedItem") != null) {
         load()
@@ -149,7 +153,7 @@ const displayOptions = (props) => {
     }
 
     const typeHtml = (type) => {
-        if (type === Type.Plant) {
+        if (type === Type.Veggie) {
             return 'Veggie'
         } else if (type === Type.Meat) {
             return 'Fleisch'
@@ -157,7 +161,7 @@ const displayOptions = (props) => {
     }
 
     const descriptionHtml = (type) => {
-        if (type === Type.Plant) {
+        if (type === Type.Veggie) {
             return 'mit pflanzlicher Bratwurst'
         } else if (type === Type.Meat) {
             return 'mit Schweinebratwurst'
@@ -184,7 +188,7 @@ const displayOptions = (props) => {
 const noDefaultNoFraming = () => {
     const props = {}
     props[option1Selector] = {
-        type: Type.Plant,
+        type: Type.Veggie,
         framing: Framing.None
     }
     props[option2Selector] = {
@@ -195,10 +199,10 @@ const noDefaultNoFraming = () => {
     return props
 };
 
-const plantDefaultTasteFraming = () => {
+const veggieDefaultTasteFraming = () => {
     const props = {}
     props[option1Selector] = {
-        type: Type.Plant,
+        type: Type.Veggie,
         framing: Framing.Taste
     }
     props[option2Selector] = {
@@ -209,10 +213,10 @@ const plantDefaultTasteFraming = () => {
     return props
 };
 
-const plantDefaultSustainabilityFraming = () => {
+const veggieDefaultSustainabilityFraming = () => {
     const props = {}
     props[option1Selector] = {
-        type: Type.Plant,
+        type: Type.Veggie,
         framing: Framing.Sustainability
     }
     props[option2Selector] = {
@@ -226,7 +230,7 @@ const plantDefaultSustainabilityFraming = () => {
 const noDefaultTasteFraming = () => {
     const props = {}
     props[option1Selector] = {
-        type: Type.Plant,
+        type: Type.Veggie,
         framing: Framing.Taste
     }
     props[option2Selector] = {
@@ -240,7 +244,7 @@ const noDefaultTasteFraming = () => {
 const noDefaultSustainabilityFraming = () => {
     const props = {}
     props[option1Selector] = {
-        type: Type.Plant,
+        type: Type.Veggie,
         framing: Framing.Sustainability
     }
     props[option2Selector] = {
@@ -256,9 +260,9 @@ const setPropsForChoiceScenario = (choiceScenario) => {
         case ChoiceScenario.A:
             return noDefaultNoFraming()
         case ChoiceScenario.B:
-            return plantDefaultTasteFraming()
+            return veggieDefaultTasteFraming()
         case ChoiceScenario.C:
-            return plantDefaultSustainabilityFraming()
+            return veggieDefaultSustainabilityFraming()
         case ChoiceScenario.D:
             return noDefaultTasteFraming()
         case ChoiceScenario.E:
