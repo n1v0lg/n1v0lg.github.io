@@ -7,6 +7,18 @@ const option2Selector = "Option2"
 
 const choiceScenarioQueryParam = 'choiceScenario';
 
+const locale = 'en';
+const translations = {
+    'en': {
+        'dish-name': 'Mezze-sausage and onion skewers',
+        'dish-description': 'with Greek pasta salad and tomato sauce'
+    },
+    "de": {
+        'dish-name': 'Spieße mit Mezze-Würstchen und Zwiebel',
+        'dish-description': 'dazu griechischer Pastasalat und tomatige Sauße'
+    },
+};
+
 const ChoiceScenario = {
     A: 'A',
     B: 'B',
@@ -24,10 +36,6 @@ const Framing = {
 const Type = {
     Veggie: 'Veggie',
     Meat: 'Meat'
-}
-
-const Terms = {
-
 }
 
 const itemSelection = (function () {
@@ -279,12 +287,28 @@ const getParameterByName = (name, url = window.location.href) => {
     return decodeURIComponent(results[2].replace(/\+/g, ' '))
 }
 
+const localize = () => {
+    document
+        .querySelectorAll("[data-i18n-key]")
+        .forEach(localizeElement);
+}
+
+const localizeElement = element => {
+    console.log(element)
+    const key = element.getAttribute("data-i18n-key");
+    element.innerText = translations[locale][key];
+};
+
 choiceScenario = getParameterByName(choiceScenarioQueryParam)
-// TODO empty/unknown choice scenario
 const props = setPropsForChoiceScenario(choiceScenario)
 itemSelection.storeChoiceScenarioProps(props)
-displayOptions(props)
-if (props.selected !== null) {
-    itemSelection.selectItem(props.selected)
-}
-displaySelected()
+document.addEventListener("DOMContentLoaded", () => {
+    // TODO empty/unknown choice scenario
+    displayOptions(props)
+    if (props.selected !== null) {
+        itemSelection.selectItem(props.selected)
+    }
+    localize()
+    displaySelected()
+});
+
