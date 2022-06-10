@@ -13,7 +13,7 @@ const translations = {
         'dish-name': 'Mezze-sausage and onion skewers',
         'dish-description': 'with Greek pasta salad and tomato sauce',
         'meat': 'Meat',
-        'veggie': 'with plant-based sausage',
+        'veggie': 'Veggie option with plant-based sausage',
         'sustainability-label': "Planet's pick",
         'taste-label': "Chef's pick",
         'veggie-sausage': 'with plant-based sausage',
