@@ -13,7 +13,7 @@ const translations = {
         'dish-name': 'Mezze-sausage and onion skewers',
         'dish-description': 'with Greek pasta salad and tomato sauce',
         'meat': 'Meat',
-        'veggie': 'Veggie',
+        'veggie': 'with plant-based sausage',
         'sustainability-label': "Planet's pick",
         'taste-label': "Chef's pick",
         'veggie-sausage': 'with plant-based sausage',
@@ -168,8 +168,8 @@ const displayOptions = (props) => {
         const card = document.querySelector('[data-id=' + getCardId(id) + ']')
         const label = card.querySelector('[data-id=label]')
         $(label).html(typeHtml(type) + ' ' + framingHtml(framing))
-        const description = card.querySelector('[data-id=description]')
-        $(description).html(descriptionHtml(type))
+        // const description = card.querySelector('[data-id=description]')
+        // $(description).html(descriptionHtml(type))
     }
 
     const typeHtml = (type) => {
