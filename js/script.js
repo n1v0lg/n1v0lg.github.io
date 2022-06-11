@@ -48,6 +48,7 @@ const Type = {
 
 const itemSelection = (function () {
     let selectedItem
+    let confirmedItem
 
     class Item {
         constructor(id) {
@@ -59,12 +60,24 @@ const itemSelection = (function () {
         sessionStorage.setItem('selectedItem', JSON.stringify(selectedItem))
     };
 
-    const load = () => {
+    const saveConfirmedItem = () => {
+        sessionStorage.setItem('confirmedItem', JSON.stringify(confirmedItem))
+    };
+
+    const loadSelectedItem = () => {
         selectedItem = JSON.parse(sessionStorage.getItem('selectedItem'))
     };
 
+    const loadConfirmedItem = () => {
+        confirmedItem = JSON.parse(sessionStorage.getItem('confirmedItem'))
+    };
+
     if (sessionStorage.getItem("selectedItem") != null) {
-        load()
+        loadSelectedItem()
+    }
+
+    if (sessionStorage.getItem("confirmedItem") != null) {
+        loadConfirmedItem()
     }
 
     const obj = {}
@@ -74,7 +87,15 @@ const itemSelection = (function () {
         saveSelectedItem()
     }
 
+    obj.confirmItem = id => {
+        obj.selectItem(id)
+        confirmedItem = new Item(id)
+        saveConfirmedItem()
+    }
+
     obj.selectedItem = () => selectedItem
+
+    obj.confirmedItem = () => confirmedItem
 
     obj.storeChoiceScenarioProps = (props) => {
         sessionStorage.setItem('props', JSON.stringify(props))
@@ -95,11 +116,14 @@ $('.select-item').click(function (event) {
 })
 
 $('.close-modal').click(function (event) {
-    alert("clicked close")
+    // Reset to previously confirmed item
+    itemSelection.confirmItem(itemSelection.confirmedItem().id)
+    displaySelected()
 })
 
 $('.save-item').click(function (event) {
-    alert("clicked save")
+    itemSelection.confirmItem(itemSelection.selectedItem().id)
+    displaySelected()
 })
 
 $('.checkout').click(function (event) {
@@ -207,7 +231,7 @@ const noDefaultNoFraming = () => {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["selected"] = null
+    props["confirmed"] = null
     return props
 };
 
@@ -221,7 +245,7 @@ const veggieDefaultTasteFraming = () => {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["selected"] = option1Selector
+    props["confirmed"] = option1Selector
     return props
 };
 
@@ -235,7 +259,7 @@ const veggieDefaultSustainabilityFraming = () => {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["selected"] = option1Selector
+    props["confirmed"] = option1Selector
     return props
 };
 
@@ -249,7 +273,7 @@ const noDefaultTasteFraming = () => {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["selected"] = null
+    props["confirmed"] = null
     return props
 };
 
@@ -263,7 +287,7 @@ const noDefaultSustainabilityFraming = () => {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["selected"] = null
+    props["confirmed"] = null
     return props
 };
 
@@ -311,8 +335,8 @@ itemSelection.storeChoiceScenarioProps(props)
 document.addEventListener("DOMContentLoaded", () => {
     // TODO empty/unknown choice scenario
     displayOptions(props)
-    if (props.selected !== null) {
-        itemSelection.selectItem(props.selected)
+    if (props.confirmed !== null) {
+        itemSelection.confirmItem(props.confirmed)
     }
     // TODO fix me
     try {
