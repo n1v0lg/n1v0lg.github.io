@@ -103,15 +103,12 @@ $('.checkout').click(function (event) {
 })
 
 const toQualtrixParam = (id) => {
-    // TODO this will have to change if meat can come first
     switch (id) {
         case option1Selector:
             return "Veggie"
         case option2Selector:
             return "Meat"
         default:
-            // TODO alert?
-            console.log("Bad id", id)
             return ""
     }
 }
