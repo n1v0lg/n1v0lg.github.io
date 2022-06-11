@@ -194,25 +194,19 @@ const displaySelected = () => {
 const displayConfirmed = () => {
     const card = document.querySelector('[data-id=menu-card-body]')
     let confirmedItemId = itemSelection.confirmedItem().id
-    // TODO hackfest
+    let title = card.querySelector('.card-title');
+    let description = card.querySelector('[data-id=menu-description-text]');
+    let ratherHave = card.querySelector('[data-id=rather-have-link]');
     if (confirmedItemId === option1Selector) {
-        $(card).html(
-            "<h1 class=\"card-title\">Veggie sausage and onion skewers</h1>\n" +
-            "                    <p class=\"card-text\"><span class=\"text-uppercase\">Plant-based sausage</span> served with\n" +
-            "                        Greek orzo-pasta salad and tomato sauce.</p>\n" +
-            "                    <a class=\"card-text\">Rather have a </a>\n" +
-            "                    <a href=\"#\" class=\"open-modal card-link\" data-toggle=\"modal\" data-target=\"#select-sausage-modal\">pork\n" +
-            "                        sausage?</a>"
-        )
+        $(title).html("Veggie sausage and onion skewers")
+        $(description).html("<span class=\"text-uppercase\">Plant-based sausage</span>\n" +
+            "                        served with\n" +
+            "                        Greek orzo-pasta salad and tomato sauce.")
     } else if (confirmedItemId === option2Selector) {
-        $(card).html(
-            "<h1 class=\"card-title\">Pork sausage and onion skewers</h1>\n" +
-            "                    <p class=\"card-text\"><span class=\"text-uppercase\">Pork sausage</span> served with\n" +
-            "                        Greek orzo-pasta salad and tomato sauce.</p>\n" +
-            "                    <a class=\"card-text\">Rather have a </a>\n" +
-            "                    <a href=\"#\" class=\"open-modal card-link\" data-toggle=\"modal\" data-target=\"#select-sausage-modal\">veggie\n" +
-            "                        sausage?</a>"
-        )
+        $(title).html("Pork sausage and onion skewers")
+        $(description).html("<span class=\"text-uppercase\">Pork sausage</span>\n" +
+            "                        served with\n" +
+            "                        Greek orzo-pasta salad and tomato sauce.")
     }
 }
 
