@@ -118,13 +118,19 @@ $('.select-item').click(function (event) {
 $('.close-modal').click(function (event) {
     // Reset to previously confirmed item
     itemSelection.confirmItem(itemSelection.confirmedItem().id)
-    displaySelected()
 })
 
 $('.save-item').click(function (event) {
     itemSelection.confirmItem(itemSelection.selectedItem().id)
+})
+
+$('.open-modal').click(function (event) {
     displaySelected()
 })
+
+// $('#select-sausage-modal').on('show.bs.modal', function () {
+//     alert("here")
+// })
 
 $('.checkout').click(function (event) {
     event.preventDefault()
