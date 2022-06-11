@@ -12,22 +12,18 @@ const translations = {
     'en': {
         'dish-name': 'Mezze-sausage and onion skewers',
         'dish-description': 'with Greek pasta salad and tomato sauce',
-        'meat': 'Meat',
-        'veggie': 'Veggie',
+        'veggie': 'Plant-based sausage',
+        'meat': 'Pork sausage',
         'sustainability-label': "Planet's pick",
         'taste-label': "Chef's pick",
-        'veggie-sausage': 'with plant-based sausage',
-        'meat-sausage': 'with pork sausage',
     },
     "de": {
         'dish-name': 'Spieße mit Mezze-Würstchen und Zwiebel',
         'dish-description': 'dazu griechischer Pastasalat und tomatige Sauße',
-        'meat': 'Fleisch',
-        'veggie': 'Veggie',
+        'veggie': 'Pflanzliche Bratwurst',
+        'meat': 'Schweinebratwurst',
         'sustainability-label': "Gut fürs Klima",
         'taste-label': "Chef's pick",
-        'veggie-sausage': 'mit pflanzlicher Bratwurst',
-        'meat-sausage': 'mit Schweinebratwurst',
     },
 };
 
@@ -52,6 +48,7 @@ const Type = {
 
 const itemSelection = (function () {
     let selectedItem
+    let confirmedItem
 
     class Item {
         constructor(id) {
@@ -63,12 +60,24 @@ const itemSelection = (function () {
         sessionStorage.setItem('selectedItem', JSON.stringify(selectedItem))
     };
 
-    const load = () => {
+    const saveConfirmedItem = () => {
+        sessionStorage.setItem('confirmedItem', JSON.stringify(confirmedItem))
+    };
+
+    const loadSelectedItem = () => {
         selectedItem = JSON.parse(sessionStorage.getItem('selectedItem'))
     };
 
+    const loadConfirmedItem = () => {
+        confirmedItem = JSON.parse(sessionStorage.getItem('confirmedItem'))
+    };
+
     if (sessionStorage.getItem("selectedItem") != null) {
-        load()
+        loadSelectedItem()
+    }
+
+    if (sessionStorage.getItem("confirmedItem") != null) {
+        loadConfirmedItem()
     }
 
     const obj = {}
@@ -78,7 +87,15 @@ const itemSelection = (function () {
         saveSelectedItem()
     }
 
+    obj.confirmItem = id => {
+        obj.selectItem(id)
+        confirmedItem = new Item(id)
+        saveConfirmedItem()
+    }
+
     obj.selectedItem = () => selectedItem
+
+    obj.confirmedItem = () => confirmedItem
 
     obj.storeChoiceScenarioProps = (props) => {
         sessionStorage.setItem('props', JSON.stringify(props))
@@ -98,24 +115,35 @@ $('.select-item').click(function (event) {
     displaySelected()
 })
 
+$('.close-modal').click(function (event) {
+    // Reset to previously confirmed item
+    itemSelection.confirmItem(itemSelection.confirmedItem().id)
+})
+
+$('.save-item').click(function (event) {
+    itemSelection.confirmItem(itemSelection.selectedItem().id)
+    displayConfirmed()
+})
+
+$('.open-modal').click(function (event) {
+    displaySelected()
+})
+
 $('.checkout').click(function (event) {
     event.preventDefault()
     const targetUrl = getTargetUrl()
-    const selectedItemId = itemSelection.selectedItem().id
-    const win = window.open(targetUrl + toQualtrixParam(selectedItemId), '_self')
+    const confirmedItemId = itemSelection.confirmedItem().id
+    const win = window.open(targetUrl + toQualtrixParam(confirmedItemId), '_self')
     win.focus()
 })
 
 const toQualtrixParam = (id) => {
-    // TODO this will have to change if meat can come first
     switch (id) {
         case option1Selector:
             return "Veggie"
         case option2Selector:
             return "Meat"
         default:
-            // TODO alert?
-            console.log("Bad id", id)
             return ""
     }
 }
@@ -163,32 +191,42 @@ const displaySelected = () => {
     displaySelectedCard(selectedItemId)
 }
 
+const displayConfirmed = () => {
+    const card = document.querySelector('[data-id=menu-card-body]')
+    let confirmedItemId = itemSelection.confirmedItem().id
+    let title = card.querySelector('.card-title');
+    let description = card.querySelector('[data-id=menu-description-text]');
+    let ratherHave = card.querySelector('[data-id=rather-have-link]');
+    if (confirmedItemId === option1Selector) {
+        $(title).html("Veggie sausage and onion skewers")
+        $(description).html("<span class=\"text-uppercase\">Plant-based sausage</span>\n" +
+            "                        served with\n" +
+            "                        Greek orzo-pasta salad and tomato sauce.")
+        $(ratherHave).html("pork sausage?")
+    } else if (confirmedItemId === option2Selector) {
+        $(title).html("Pork sausage and onion skewers")
+        $(description).html("<span class=\"text-uppercase\">Pork sausage</span>\n" +
+            "                        served with\n" +
+            "                        Greek orzo-pasta salad and tomato sauce.")
+        $(ratherHave).html("veggie sausage?")
+    }
+}
+
 const displayOptions = (props) => {
     const displayOption = (id, type, framing) => {
         const card = document.querySelector('[data-id=' + getCardId(id) + ']')
         const label = card.querySelector('[data-id=label]')
         $(label).html(typeHtml(type) + ' ' + framingHtml(framing))
-        const description = card.querySelector('[data-id=description]')
-        $(description).html(descriptionHtml(type))
     }
 
     const typeHtml = (type) => {
+        // TODO fix translations
         if (type === Type.Veggie) {
             return translations[locale]["veggie"]
         } else if (type === Type.Meat) {
             return translations[locale]["meat"]
         }
     }
-
-    const descriptionHtml = (type) => {
-        // TODO fix translations
-        if (type === Type.Veggie) {
-            return translations[locale]["veggie-sausage"]
-        } else if (type === Type.Meat) {
-            return translations[locale]["meat-sausage"]
-        }
-    }
-
     const framingHtml = (framing) => {
         // TODO fix translations
         switch (framing) {
@@ -217,7 +255,7 @@ const noDefaultNoFraming = () => {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["selected"] = null
+    props["confirmed"] = null
     return props
 };
 
@@ -231,7 +269,7 @@ const veggieDefaultTasteFraming = () => {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["selected"] = option1Selector
+    props["confirmed"] = option1Selector
     return props
 };
 
@@ -245,7 +283,7 @@ const veggieDefaultSustainabilityFraming = () => {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["selected"] = option1Selector
+    props["confirmed"] = option1Selector
     return props
 };
 
@@ -259,7 +297,7 @@ const noDefaultTasteFraming = () => {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["selected"] = null
+    props["confirmed"] = null
     return props
 };
 
@@ -273,7 +311,7 @@ const noDefaultSustainabilityFraming = () => {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["selected"] = null
+    props["confirmed"] = null
     return props
 };
 
@@ -321,12 +359,17 @@ itemSelection.storeChoiceScenarioProps(props)
 document.addEventListener("DOMContentLoaded", () => {
     // TODO empty/unknown choice scenario
     displayOptions(props)
-    if (props.selected !== null) {
-        itemSelection.selectItem(props.selected)
+    if (props.confirmed !== null) {
+        itemSelection.confirmItem(props.confirmed)
     }
     // TODO fix me
     try {
         displaySelected();
+    } catch (error) {
+        console.error(error);
+    }
+    try {
+        displayConfirmed()
     } catch (error) {
         console.error(error);
     }

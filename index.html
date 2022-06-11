@@ -21,49 +21,67 @@
 <nav class="navbar navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" href="#">DAHEIM KOCHEN</a>
     <a class="navbar-brand" href="#">Kochboxen</a>
-    <ul class="navbar-nav ml-auto">
-        <div class="row">
-            <div class="col">
-                <button type="button" class="checkout btn btn-primary" data-toggle="modal" data-target="#cart">
-                    Checkout
-                </button>
-            </div>
-        </div>
-    </ul>
 </nav>
 
 <div class="container" style="width: 48rem;">
     <div class="card">
         <img class="card-img-top" src="images/wurst.JPG" alt="">
         <div class="card-body">
-            <h1 class="card-title" data-i18n-key="dish-name">Spieße mit Mezze-Würstchen und Zwiebel</h1>
-            <p class="card-text" data-i18n-key="dish-description">dazu griechischer Pastasalat und tomatige Sauße</p>
-            <p class="card-text">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock"
-                     viewBox="0 0 16 16">
-                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
-                </svg>
-                35 min
-            </p>
+            <div class="card border-secondary mb-3">
+                <div class="card-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-cart" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    In your cart
+                </div>
+                <div class="card-body" data-id="menu-card-body">
+                    <h1 class="card-title">Veggie sausage and onion skewers</h1>
+                    <p class="card-text" data-id="menu-description-text"><span class="text-uppercase">Plant-based sausage</span>
+                        served with
+                        Greek orzo-pasta salad and tomato sauce.</p>
+                    <a class="card-text">Rather have a </a>
+                    <a href="#" class="open-modal card-link" data-id="rather-have-link" data-toggle="modal"
+                       data-target="#select-sausage-modal">pork
+                        sausage?</a>
+                </div>
+            </div>
+            <a href="#" data-id="Option1"
+               class="checkout btn btn-block btn-primary float-right">Checkout (1)</a>
         </div>
     </div>
-    <div class="card-deck">
-        <!-- TODO rename or remove CardOption1 -->
-        <div class="card border-light mb-3 select-card text-center" data-id="CardOption1">
-            <div class="card-body">
-                <p class="card-text" data-id="label"></p>
-                <p class="card-text" data-id="description"></p>
-                <a href="#" data-id="Option1"
-                   class="select-item btn btn-block btn-secondary">Select</a>
+</div>
+
+<div class="modal fade" id="select-sausage-modal" tabindex="-1" role="dialog"
+     aria-labelledby="select-sausage-modal-label"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="select-sausage-modal-label">Select sausage</h5>
+                <button type="button" class="close-modal close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        </div>
-        <div class="card border-light mb-3 select-card text-center" data-id="CardOption2">
-            <div class="card-body">
-                <p class="card-text" data-id="label"></p>
-                <p class="card-text" data-id="description"></p>
-                <a href="#" data-id="Option2"
-                   class="select-item btn btn-block btn-secondary">Select</a>
+            <div class="modal-body">
+                <div class="select-card card border-light mb-3 text-center" data-id="CardOption1">
+                    <div class="card-body">
+                        <p class="card-text" data-id="label"></p>
+                        <a href="#" data-id="Option1"
+                           class="select-item btn btn-block btn-secondary">Select</a>
+                    </div>
+                </div>
+                <div class="select-card card border-light mb-3 text-center" data-id="CardOption2">
+                    <div class="card-body">
+                        <p class="card-text" data-id="label"></p>
+                        <a href="#" data-id="Option2"
+                           class="select-item btn btn-block btn-secondary">Select</a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="close-modal btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="save-item btn btn-primary" data-dismiss="modal">Save selection</button>
             </div>
         </div>
     </div>
