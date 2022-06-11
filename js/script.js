@@ -202,11 +202,13 @@ const displayConfirmed = () => {
         $(description).html("<span class=\"text-uppercase\">Plant-based sausage</span>\n" +
             "                        served with\n" +
             "                        Greek orzo-pasta salad and tomato sauce.")
+        $(ratherHave).html("pork sausage?")
     } else if (confirmedItemId === option2Selector) {
         $(title).html("Pork sausage and onion skewers")
         $(description).html("<span class=\"text-uppercase\">Pork sausage</span>\n" +
             "                        served with\n" +
             "                        Greek orzo-pasta salad and tomato sauce.")
+        $(ratherHave).html("veggie sausage?")
     }
 }
 
