@@ -122,6 +122,7 @@ $('.close-modal').click(function (event) {
 
 $('.save-item').click(function (event) {
     itemSelection.confirmItem(itemSelection.selectedItem().id)
+    displayConfirmed()
 })
 
 $('.open-modal').click(function (event) {
@@ -188,6 +189,31 @@ const displaySelected = () => {
     let selectedItemId = itemSelection.selectedItem().id
     displaySelectedButton(selectedItemId)
     displaySelectedCard(selectedItemId)
+}
+
+const displayConfirmed = () => {
+    const card = document.querySelector('[data-id=menu-card-body]')
+    let confirmedItemId = itemSelection.confirmedItem().id
+    // TODO hackfest
+    if (confirmedItemId === option1Selector) {
+        $(card).html(
+            "<h1 class=\"card-title\">Veggie sausage and onion skewers</h1>\n" +
+            "                    <p class=\"card-text\"><span class=\"text-uppercase\">Plant-based sausage</span> served with\n" +
+            "                        Greek orzo-pasta salad and tomato sauce.</p>\n" +
+            "                    <a class=\"card-text\">Rather have a </a>\n" +
+            "                    <a href=\"#\" class=\"open-modal card-link\" data-toggle=\"modal\" data-target=\"#select-sausage-modal\">pork\n" +
+            "                        sausage?</a>"
+        )
+    } else if (confirmedItemId === option2Selector) {
+        $(card).html(
+            "<h1 class=\"card-title\">Pork sausage and onion skewers</h1>\n" +
+            "                    <p class=\"card-text\"><span class=\"text-uppercase\">Pork sausage</span> served with\n" +
+            "                        Greek orzo-pasta salad and tomato sauce.</p>\n" +
+            "                    <a class=\"card-text\">Rather have a </a>\n" +
+            "                    <a href=\"#\" class=\"open-modal card-link\" data-toggle=\"modal\" data-target=\"#select-sausage-modal\">veggie\n" +
+            "                        sausage?</a>"
+        )
+    }
 }
 
 const displayOptions = (props) => {
@@ -343,6 +369,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // TODO fix me
     try {
         displaySelected();
+    } catch (error) {
+        console.error(error);
+    }
+    try {
+        displayConfirmed()
     } catch (error) {
         console.error(error);
     }
