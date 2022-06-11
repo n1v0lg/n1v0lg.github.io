@@ -128,15 +128,11 @@ $('.open-modal').click(function (event) {
     displaySelected()
 })
 
-// $('#select-sausage-modal').on('show.bs.modal', function () {
-//     alert("here")
-// })
-
 $('.checkout').click(function (event) {
     event.preventDefault()
     const targetUrl = getTargetUrl()
-    const selectedItemId = itemSelection.selectedItem().id
-    const win = window.open(targetUrl + toQualtrixParam(selectedItemId), '_self')
+    const confirmedItemId = itemSelection.confirmedItem().id
+    const win = window.open(targetUrl + toQualtrixParam(confirmedItemId), '_self')
     win.focus()
 })
 
