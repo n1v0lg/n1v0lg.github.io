@@ -12,22 +12,18 @@ const translations = {
     'en': {
         'dish-name': 'Mezze-sausage and onion skewers',
         'dish-description': 'with Greek pasta salad and tomato sauce',
-        'meat': 'Meat',
-        'veggie': 'Veggie option with plant-based sausage',
+        'veggie': 'Plant-based sausage',
+        'meat': 'Pork sausage',
         'sustainability-label': "Planet's pick",
         'taste-label': "Chef's pick",
-        'veggie-sausage': 'with plant-based sausage',
-        'meat-sausage': 'with pork sausage',
     },
     "de": {
         'dish-name': 'Spieße mit Mezze-Würstchen und Zwiebel',
         'dish-description': 'dazu griechischer Pastasalat und tomatige Sauße',
-        'meat': 'Fleisch',
-        'veggie': 'Veggie',
+        'veggie': 'Pflanzliche Bratwurst',
+        'meat': 'Schweinebratwurst',
         'sustainability-label': "Gut fürs Klima",
         'taste-label': "Chef's pick",
-        'veggie-sausage': 'mit pflanzlicher Bratwurst',
-        'meat-sausage': 'mit Schweinebratwurst',
     },
 };
 
@@ -168,27 +164,16 @@ const displayOptions = (props) => {
         const card = document.querySelector('[data-id=' + getCardId(id) + ']')
         const label = card.querySelector('[data-id=label]')
         $(label).html(typeHtml(type) + ' ' + framingHtml(framing))
-        // const description = card.querySelector('[data-id=description]')
-        // $(description).html(descriptionHtml(type))
     }
 
     const typeHtml = (type) => {
+        // TODO fix translations
         if (type === Type.Veggie) {
             return translations[locale]["veggie"]
         } else if (type === Type.Meat) {
             return translations[locale]["meat"]
         }
     }
-
-    const descriptionHtml = (type) => {
-        // TODO fix translations
-        if (type === Type.Veggie) {
-            return translations[locale]["veggie-sausage"]
-        } else if (type === Type.Meat) {
-            return translations[locale]["meat-sausage"]
-        }
-    }
-
     const framingHtml = (framing) => {
         // TODO fix translations
         switch (framing) {
