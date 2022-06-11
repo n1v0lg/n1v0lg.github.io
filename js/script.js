@@ -94,6 +94,14 @@ $('.select-item').click(function (event) {
     displaySelected()
 })
 
+$('.close-modal').click(function (event) {
+    alert("clicked close")
+})
+
+$('.save-item').click(function (event) {
+    alert("clicked save")
+})
+
 $('.checkout').click(function (event) {
     event.preventDefault()
     const targetUrl = getTargetUrl()
