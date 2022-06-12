@@ -245,13 +245,20 @@ const displayOptions = (props) => {
 }
 
 const displayFramingModal = (props) => {
+    const displayFraming = (framingModal, framingText) => {
+        const text = framingModal.querySelector('[data-id=framing-text]')
+        $(text).html(framingText)
+        $(framingModal).modal('show')
+    }
+
     const option = props[option1Selector]
+    const framingModal = document.querySelector('[data-id=framing-modal]');
     switch (option.framing) {
         case Framing.Taste:
-            $('#framing-modal').modal('show')
+            displayFraming(framingModal, "We have pre-selected the tastiest protein option for you. Enjoy!")
             return
         case Framing.Sustainability:
-            $('#framing-modal').modal('show')
+            displayFraming(framingModal, "We have pre-selected the most environmentally-friendly protein option for you. Enjoy!")
             return
         default:
             return
