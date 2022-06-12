@@ -18,6 +18,8 @@ const translations = {
         'hey-there': "They there 👋",
         'select-sausage': "Select sausage",
         'rather-have': "Rather have a ",
+        'preselected-taste': "We have pre-selected the tastiest protein option for you. Enjoy!",
+        'preselected-sust': "We have pre-selected the most environmentally-friendly protein option for you. Enjoy!",
     },
     "de": {
         'veggie-dish-name': 'Spieße mit Pflanzlicher Bratwurst und Zwiebeln',
@@ -28,6 +30,8 @@ const translations = {
         'hey-there': "Hallo 👋",
         'select-sausage': "Wurstauswahl", // TODO
         'rather-have': "Lieber eine ",
+        'preselected-taste': "Wir haben die leckerste Proteinoption für dich ausgewählt. Enjoy!",
+        'preselected-sust': "Wir haben die nachhaltigste Proteinoption für dich ausgewählt. Enjoy!",
     },
 };
 
@@ -253,10 +257,10 @@ const displayFramingModal = (props) => {
     const framingModal = document.querySelector('[data-id=framing-modal]');
     switch (option.framing) {
         case Framing.Taste:
-            displayFraming(framingModal, "We have pre-selected the tastiest protein option for you. Enjoy!")
+            displayFraming(framingModal, loc("preselected-taste"))
             return
         case Framing.Sustainability:
-            displayFraming(framingModal, "We have pre-selected the most environmentally-friendly protein option for you. Enjoy!")
+            displayFraming(framingModal, loc("preselected-sust"))
             return
         default:
             return
