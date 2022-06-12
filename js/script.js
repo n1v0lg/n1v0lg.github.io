@@ -114,38 +114,37 @@ $('.select-item').click(function (event) {
     displaySelected()
 })
 
-$('.close-modal').click(function (event) {
+$('.close-modal').click(function (_) {
     // Reset to previously confirmed item
     itemSelection.confirmItem(itemSelection.confirmedItem().id)
 })
 
-$('.save-item').click(function (event) {
+$('.save-item').click(function (_) {
     itemSelection.confirmItem(itemSelection.selectedItem().id)
-    const confirmedType = toType(itemSelection.confirmedItem().id, itemSelection.choiceScenarioProps())
-    displayConfirmed(confirmedType)
+    displayConfirmed(itemSelection.choiceScenarioProps())
 })
 
-$('.open-modal').click(function (event) {
+$('.open-modal').click(function (_) {
     displaySelected()
 })
 
 $('.checkout').click(function (event) {
     event.preventDefault()
     const targetUrl = getTargetUrl()
-    const confirmedItemId = itemSelection.confirmedItem().id
-    const win = window.open(targetUrl + toQualtrixParam(confirmedItemId), '_self')
+    const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, itemSelection.choiceScenarioProps())
+    const win = window.open(targetUrl + toQualtrixParam(confirmedType), '_self')
     win.focus()
 })
 
-const toType = (id, props) => {
+const getConfirmedType = (id, props) => {
     return props[id].type
 }
 
-const toQualtrixParam = (id) => {
-    switch (id) {
-        case option1Selector:
+const toQualtrixParam = (type) => {
+    switch (type) {
+        case Type.Veggie:
             return "Veggie"
-        case option2Selector:
+        case Type.Meat:
             return "Meat"
         default:
             return ""
@@ -195,7 +194,8 @@ const displaySelected = () => {
     displaySelectedCard(selectedItemId)
 }
 
-const displayConfirmed = (confirmedType) => {
+const displayConfirmed = (props) => {
+    const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, props)
     const card = document.querySelector('[data-id=menu-card-body]')
     let title = card.querySelector('.card-title');
     let description = card.querySelector('[data-id=menu-description-text]');
@@ -366,8 +366,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
         console.error(error);
     }
+    // TODO fix me
     try {
-        displayConfirmed()
+        displayConfirmed(props)
     } catch (error) {
         console.error(error);
     }
