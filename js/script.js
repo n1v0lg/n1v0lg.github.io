@@ -212,10 +212,10 @@ const displayConfirmed = () => {
 }
 
 const displayOptions = (props) => {
-    const displayOption = (id, type, framing) => {
+    const displayOption = (id, type) => {
         const card = document.querySelector('[data-id=' + getCardId(id) + ']')
         const label = card.querySelector('[data-id=label]')
-        $(label).html(typeHtml(type) + ' ' + framingHtml(framing))
+        $(label).html(typeHtml(type))
     }
 
     const typeHtml = (type) => {
@@ -226,22 +226,11 @@ const displayOptions = (props) => {
             return translations[locale]["meat"]
         }
     }
-    const framingHtml = (framing) => {
-        // TODO fix translations
-        switch (framing) {
-            case Framing.Taste:
-                return "<span class='badge badge-info'>" + translations[locale]["taste-label"] + "</span>"
-            case Framing.Sustainability:
-                return "<span class='badge badge-info'>" + translations[locale]["sustainability-label"] + "</span>"
-            default:
-                return ''
-        }
-    }
 
     const option1 = props[option1Selector]
-    displayOption(option1Selector, option1.type, option1.framing)
+    displayOption(option1Selector, option1.type)
     const option2 = props[option2Selector]
-    displayOption(option2Selector, option2.type, option2.framing)
+    displayOption(option2Selector, option2.type)
 }
 
 const displayFramingModal = (props) => {
@@ -310,14 +299,14 @@ const veggieDefaultNoFraming = () => {
 const meatDefaultNoFraming = () => {
     const props = {}
     props[option1Selector] = {
-        type: Type.Veggie,
-        framing: Framing.None
-    }
-    props[option2Selector] = {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["confirmed"] = option2Selector
+    props[option2Selector] = {
+        type: Type.Veggie,
+        framing: Framing.None
+    }
+    props["confirmed"] = option1Selector
     return props
 };
 
@@ -332,7 +321,7 @@ const setPropsForChoiceScenario = (choiceScenario) => {
         case ChoiceScenario.D:
             return meatDefaultNoFraming()
         default:
-            console.log("Unknown choice scenario")
+            console.log("unknown choice scenario")
             return veggieDefaultTasteFraming()
     }
 }
