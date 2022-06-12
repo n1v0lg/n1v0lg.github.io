@@ -10,20 +10,24 @@ const choiceScenarioQueryParam = 'choiceScenario';
 const locale = 'de';
 const translations = {
     'en': {
-        'dish-name': 'Mezze-sausage and onion skewers',
-        'dish-description': 'with Greek pasta salad and tomato sauce',
+        'veggie-dish-name': 'Veggie sausage and onion skewers',
+        'pork-dish-name': 'Pork sausage and onion skewers',
+        'served-with': 'served with Greek orzo-pasta salad and tomato sauce.',
         'veggie': 'Plant-based sausage',
         'meat': 'Pork sausage',
         'hey-there': "They there 👋",
         'select-sausage': "Select sausage",
+        'rather-have': "Rather have a ",
     },
     "de": {
-        'dish-name': 'Spieße mit Mezze-Würstchen und Zwiebel',
-        'dish-description': 'dazu griechischer Pastasalat und tomatige Sauße',
+        'veggie-dish-name': 'Spieße mit Pflanzlicher Bratwurst und Zwiebeln',
+        'pork-dish-name': 'Spieße mit Schweinebratwurst und Zwiebeln',
+        'served-with': 'mit griechischem Orzopastasalat und tomatiger Sauße.',
         'veggie': 'Pflanzliche Bratwurst',
         'meat': 'Schweinebratwurst',
         'hey-there': "Hallo 👋",
-        'select-sausage': "Wurstauswahl",
+        'select-sausage': "Wurstauswahl", // TODO
+        'rather-have': "Lieber eine ",
     },
 };
 
@@ -205,17 +209,13 @@ const displayConfirmed = (props) => {
     let description = card.querySelector('[data-id=menu-description-text]');
     let ratherHave = card.querySelector('[data-id=rather-have-link]');
     if (confirmedType === Type.Veggie) {
-        $(title).html("Veggie sausage and onion skewers")
-        $(description).html("<span class=\"text-uppercase\">Plant-based sausage</span>\n" +
-            "                        served with\n" +
-            "                        Greek orzo-pasta salad and tomato sauce.")
-        $(ratherHave).html("pork sausage?")
+        $(title).html(loc("veggie-dish-name"))
+        $(description).html(loc("veggie") + " " + loc("served-with"))
+        $(ratherHave).html(loc("meat") + "?")
     } else if (confirmedType === Type.Meat) {
-        $(title).html("Pork sausage and onion skewers")
-        $(description).html("<span class=\"text-uppercase\">Pork sausage</span>\n" +
-            "                        served with\n" +
-            "                        Greek orzo-pasta salad and tomato sauce.")
-        $(ratherHave).html("veggie sausage?")
+        $(title).html(loc("pork-dish-name"))
+        $(description).html(loc("meat") + " " + loc("served-with"))
+        $(ratherHave).html(loc("veggie") + "?")
     }
 }
 
