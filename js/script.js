@@ -259,20 +259,6 @@ const displayFramingModal = (props) => {
     }
 }
 
-const noDefaultNoFraming = () => {
-    const props = {}
-    props[option1Selector] = {
-        type: Type.Veggie,
-        framing: Framing.None
-    }
-    props[option2Selector] = {
-        type: Type.Meat,
-        framing: Framing.None
-    }
-    props["confirmed"] = null
-    return props
-};
-
 const veggieDefaultTasteFraming = () => {
     const props = {}
     props[option1Selector] = {
@@ -301,49 +287,47 @@ const veggieDefaultSustainabilityFraming = () => {
     return props
 };
 
-const noDefaultTasteFraming = () => {
+const veggieDefaultNoFraming = () => {
     const props = {}
     props[option1Selector] = {
         type: Type.Veggie,
-        framing: Framing.Taste
+        framing: Framing.None
     }
     props[option2Selector] = {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["confirmed"] = null
+    props["confirmed"] = option1Selector
     return props
 };
 
-const noDefaultSustainabilityFraming = () => {
+const meatDefaultNoFraming = () => {
     const props = {}
     props[option1Selector] = {
         type: Type.Veggie,
-        framing: Framing.Sustainability
+        framing: Framing.None
     }
     props[option2Selector] = {
         type: Type.Meat,
         framing: Framing.None
     }
-    props["confirmed"] = null
+    props["confirmed"] = option2Selector
     return props
 };
 
 const setPropsForChoiceScenario = (choiceScenario) => {
     switch (choiceScenario) {
         case ChoiceScenario.A:
-            return noDefaultNoFraming()
-        case ChoiceScenario.B:
             return veggieDefaultTasteFraming()
-        case ChoiceScenario.C:
+        case ChoiceScenario.B:
             return veggieDefaultSustainabilityFraming()
+        case ChoiceScenario.C:
+            return veggieDefaultNoFraming()
         case ChoiceScenario.D:
-            return noDefaultTasteFraming()
-        case ChoiceScenario.E:
-            return noDefaultSustainabilityFraming()
+            return meatDefaultNoFraming()
         default:
             console.log("Unknown choice scenario")
-            return noDefaultNoFraming()
+            return veggieDefaultTasteFraming()
     }
 }
 
