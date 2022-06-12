@@ -245,8 +245,18 @@ const displayOptions = (props) => {
     displayOption(option2Selector, option2.type, option2.framing)
 }
 
-const displayFramingModal = () => {
-    $('#framing-modal').modal('show');
+const displayFramingModal = (props) => {
+    const option = props[option1Selector]
+    switch (option.framing) {
+        case Framing.Taste:
+            $('#framing-modal').modal('show')
+            return
+        case Framing.Sustainability:
+            $('#framing-modal').modal('show')
+            return
+        default:
+            return
+    }
 }
 
 const noDefaultNoFraming = () => {
@@ -362,7 +372,7 @@ const props = setPropsForChoiceScenario(choiceScenario)
 itemSelection.storeChoiceScenarioProps(props)
 document.addEventListener("DOMContentLoaded", () => {
     // TODO empty/unknown choice scenario
-    displayFramingModal()
+    displayFramingModal(props)
     displayOptions(props)
     if (props.confirmed !== null) {
         itemSelection.confirmItem(props.confirmed)
