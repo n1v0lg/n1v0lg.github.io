@@ -121,7 +121,8 @@ $('.close-modal').click(function (event) {
 
 $('.save-item').click(function (event) {
     itemSelection.confirmItem(itemSelection.selectedItem().id)
-    displayConfirmed()
+    const confirmedType = toType(itemSelection.confirmedItem().id, itemSelection.choiceScenarioProps())
+    displayConfirmed(confirmedType)
 })
 
 $('.open-modal').click(function (event) {
@@ -135,6 +136,10 @@ $('.checkout').click(function (event) {
     const win = window.open(targetUrl + toQualtrixParam(confirmedItemId), '_self')
     win.focus()
 })
+
+const toType = (id, props) => {
+    return props[id].type
+}
 
 const toQualtrixParam = (id) => {
     switch (id) {
@@ -190,19 +195,18 @@ const displaySelected = () => {
     displaySelectedCard(selectedItemId)
 }
 
-const displayConfirmed = () => {
+const displayConfirmed = (confirmedType) => {
     const card = document.querySelector('[data-id=menu-card-body]')
-    let confirmedItemId = itemSelection.confirmedItem().id
     let title = card.querySelector('.card-title');
     let description = card.querySelector('[data-id=menu-description-text]');
     let ratherHave = card.querySelector('[data-id=rather-have-link]');
-    if (confirmedItemId === option1Selector) {
+    if (confirmedType === Type.Veggie) {
         $(title).html("Veggie sausage and onion skewers")
         $(description).html("<span class=\"text-uppercase\">Plant-based sausage</span>\n" +
             "                        served with\n" +
             "                        Greek orzo-pasta salad and tomato sauce.")
         $(ratherHave).html("pork sausage?")
-    } else if (confirmedItemId === option2Selector) {
+    } else if (confirmedType === Type.Meat) {
         $(title).html("Pork sausage and onion skewers")
         $(description).html("<span class=\"text-uppercase\">Pork sausage</span>\n" +
             "                        served with\n" +
