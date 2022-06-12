@@ -30,8 +30,8 @@ const translations = {
         'hey-there': "Hallo 👋",
         'select-sausage': "Wurstauswahl", // TODO
         'rather-have': "Lieber eine ",
-        'preselected-taste': "Wir haben die leckerste Proteinoption für dich ausgewählt. Enjoy!",
-        'preselected-sust': "Wir haben die nachhaltigste Proteinoption für dich ausgewählt. Enjoy!",
+        'preselected-taste': "Wir haben die leckerste Proteinoption für dich ausgewählt. Guten Appetit!",
+        'preselected-sust': "Wir haben die nachhaltigste Proteinoption für dich ausgewählt. Guten Appetit!",
     },
 };
 
