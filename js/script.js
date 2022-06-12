@@ -20,6 +20,10 @@ const translations = {
         'rather-have': "Rather have a ",
         'preselected-taste': "We have pre-selected the tastiest protein option for you. Enjoy!",
         'preselected-sust': "We have pre-selected the most environmentally-friendly protein option for you. Enjoy!",
+        'select': "Select",
+        'selected': "Selected",
+        'save-selection': "Save selection",
+        'cancel': "Cancel",
     },
     "de": {
         'veggie-dish-name': 'Spieße mit Pflanzlicher Bratwurst und Zwiebeln',
@@ -32,6 +36,10 @@ const translations = {
         'rather-have': "Lieber eine ",
         'preselected-taste': "Wir haben die leckerste Proteinoption für dich ausgewählt. Guten Appetit!",
         'preselected-sust': "Wir haben die nachhaltigste Proteinoption für dich ausgewählt. Guten Appetit!",
+        'select': "Auswählen",
+        'selected': "Ausgewählt",
+        'save-selection': "Bestätigen",
+        'cancel': "Abbrechen",
     },
 };
 
@@ -180,10 +188,10 @@ const displaySelected = () => {
         for (const button of buttons) {
             let jButton = $(button)
             if (jButton.data('id') === id) {
-                jButton.html("Selected")
+                jButton.html(loc("selected"))
                 jButton.removeClass("btn-secondary").addClass("btn-success")
             } else {
-                jButton.html("Select")
+                jButton.html(loc("select"))
                 jButton.removeClass("btn-success").addClass("btn-secondary")
             }
         }
