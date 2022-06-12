@@ -7,19 +7,23 @@ const option2Selector = "option2"
 
 const choiceScenarioQueryParam = 'choiceScenario';
 
-const locale = 'en';
+const locale = 'de';
 const translations = {
     'en': {
         'dish-name': 'Mezze-sausage and onion skewers',
         'dish-description': 'with Greek pasta salad and tomato sauce',
         'veggie': 'Plant-based sausage',
         'meat': 'Pork sausage',
+        'hey-there': "They there 👋",
+        'select-sausage': "Select sausage",
     },
     "de": {
         'dish-name': 'Spieße mit Mezze-Würstchen und Zwiebel',
         'dish-description': 'dazu griechischer Pastasalat und tomatige Sauße',
         'veggie': 'Pflanzliche Bratwurst',
         'meat': 'Schweinebratwurst',
+        'hey-there': "Hallo 👋",
+        'select-sausage': "Wurstauswahl",
     },
 };
 
