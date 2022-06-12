@@ -245,6 +245,10 @@ const displayOptions = (props) => {
     displayOption(option2Selector, option2.type, option2.framing)
 }
 
+const displayFramingModal = () => {
+    $('#framing-modal').modal('show');
+}
+
 const noDefaultNoFraming = () => {
     const props = {}
     props[option1Selector] = {
@@ -358,6 +362,7 @@ const props = setPropsForChoiceScenario(choiceScenario)
 itemSelection.storeChoiceScenarioProps(props)
 document.addEventListener("DOMContentLoaded", () => {
     // TODO empty/unknown choice scenario
+    displayFramingModal()
     displayOptions(props)
     if (props.confirmed !== null) {
         itemSelection.confirmItem(props.confirmed)
@@ -375,4 +380,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     localize()
 });
-
