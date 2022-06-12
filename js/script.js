@@ -1,6 +1,6 @@
 const isPreviewMode = false
-const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_egGiorwgqpcyPCm?Q_CHL=preview&Q_SurveyVersionID=current&SelectedItem='
-const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_a36JB863LP6ZDBY?SelectedItem='
+const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_egGiorwgqpcyPCm?Q_CHL=preview&Q_SurveyVersionID=current&'
+const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_a36JB863LP6ZDBY?'
 
 const option1Selector = "option1"
 const option2Selector = "option2"
@@ -128,11 +128,15 @@ $('.open-modal').click(function (_) {
     displaySelected()
 })
 
+function toQualtrixUrl(confirmedType, choiceScenario) {
+    return getTargetUrl() + toQualtrixParam(confirmedType) + "&" + "ChoiceScenario=" + choiceScenario;
+}
+
 $('.checkout').click(function (event) {
     event.preventDefault()
-    const targetUrl = getTargetUrl()
     const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, itemSelection.choiceScenarioProps())
-    const win = window.open(targetUrl + toQualtrixParam(confirmedType), '_self')
+    const choiceScenario = getParameterByName(choiceScenarioQueryParam)
+    const win = window.open(toQualtrixUrl(confirmedType, choiceScenario), '_self')
     win.focus()
 })
 
@@ -143,9 +147,9 @@ const getConfirmedType = (id, props) => {
 const toQualtrixParam = (type) => {
     switch (type) {
         case Type.Veggie:
-            return "Veggie"
+            return "SelectedItem=Veggie"
         case Type.Meat:
-            return "Meat"
+            return "SelectedItem=Meat"
         default:
             return ""
     }
