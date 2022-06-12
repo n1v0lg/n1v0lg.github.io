@@ -32,7 +32,6 @@ const ChoiceScenario = {
     B: 'B',
     C: 'C',
     D: 'D',
-    E: 'E'
 }
 
 const Framing = {
