@@ -14,16 +14,12 @@ const translations = {
         'dish-description': 'with Greek pasta salad and tomato sauce',
         'veggie': 'Plant-based sausage',
         'meat': 'Pork sausage',
-        'sustainability-label': "Planet's pick",
-        'taste-label': "Chef's pick",
     },
     "de": {
         'dish-name': 'Spieße mit Mezze-Würstchen und Zwiebel',
         'dish-description': 'dazu griechischer Pastasalat und tomatige Sauße',
         'veggie': 'Pflanzliche Bratwurst',
         'meat': 'Schweinebratwurst',
-        'sustainability-label': "Gut fürs Klima",
-        'taste-label': "Chef's pick",
     },
 };
 
@@ -219,6 +215,8 @@ const displayConfirmed = (props) => {
     }
 }
 
+const loc = tag => translations[locale][tag];
+
 const displayOptions = (props) => {
     const displayOption = (id, type) => {
         const card = document.querySelector('[data-id=' + getCardId(id) + ']')
@@ -227,11 +225,10 @@ const displayOptions = (props) => {
     }
 
     const typeHtml = (type) => {
-        // TODO fix translations
         if (type === Type.Veggie) {
-            return translations[locale]["veggie"]
+            return loc("veggie")
         } else if (type === Type.Meat) {
-            return translations[locale]["meat"]
+            return loc("meat")
         }
     }
 
