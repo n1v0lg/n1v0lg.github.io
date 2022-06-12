@@ -2,8 +2,8 @@ const isPreviewMode = false
 const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_egGiorwgqpcyPCm?Q_CHL=preview&Q_SurveyVersionID=current&SelectedItem='
 const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_a36JB863LP6ZDBY?SelectedItem='
 
-const option1Selector = "Option1"
-const option2Selector = "Option2"
+const option1Selector = "option1"
+const option2Selector = "option2"
 
 const choiceScenarioQueryParam = 'choiceScenario';
 
@@ -156,7 +156,7 @@ const getTargetUrl = () => {
 }
 
 // TODO hack hack hack
-const getCardId = id => 'Card' + id
+const getCardId = id => 'card-' + id
 
 const displaySelected = () => {
     const displaySelectedButton = id => {
