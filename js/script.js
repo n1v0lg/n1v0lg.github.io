@@ -1,11 +1,14 @@
 const isPreviewMode = false
-const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_egGiorwgqpcyPCm?Q_CHL=preview&Q_SurveyVersionID=current&'
-const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_a36JB863LP6ZDBY?'
+const qualtrixBaseUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/'
+const qualtrixBaseUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/'
 
 const option1Selector = "option1"
 const option2Selector = "option2"
 
 const choiceScenarioQueryParam = 'choiceScenario';
+const consentNonceQueryParam = 'consentNonce';
+const consentSessionIdQueryParam = 'consentSessionID';
+const surveyIdQueryParam = 'surveyID';
 
 const locale = 'de';
 const translations = {
@@ -26,16 +29,16 @@ const translations = {
         'cancel': "Cancel",
     },
     "de": {
-        'veggie-dish-name': 'Spieße mit Pflanzlicher Bratwurst und Zwiebeln',
-        'pork-dish-name': 'Spieße mit Schweinebratwurst und Zwiebeln',
-        'served-with': 'mit griechischem Orzopastasalat und tomatiger Sauße.',
-        'veggie': 'Pflanzliche Bratwurst',
-        'meat': 'Schweinebratwurst',
+        'veggie-dish-name': 'Spieße mit Zwiebeln und Bratwurst auf Pflanzenbasis',
+        'pork-dish-name': 'Spieße mit Zwiebeln und Bratwurst vom Schwein',
+        'served-with': 'Dazu griechischer Orzopastasalat und Tomatensoße.',
+        'veggie': 'Bratwurst auf Erbsenbasis',
+        'meat': 'Bratwurst vom Schwein',
         'hey-there': "Hallo 👋",
-        'select-sausage': "Wurstauswahl", // TODO
+        'select-sausage': "Auswahl",
         'rather-have': "Lieber eine ",
-        'preselected-taste': "Wir haben die leckerste Proteinoption für dich ausgewählt. Guten Appetit!",
-        'preselected-sust': "Wir haben die nachhaltigste Proteinoption für dich ausgewählt. Guten Appetit!",
+        'preselected-taste': "Wir haben die leckerste Bratwurst für dich ausgewählt. Guten Appetit!",
+        'preselected-sust': "Wir haben die nachhaltigste Bratwurst für dich ausgewählt. Guten Appetit!",
         'select': "Auswählen",
         'selected': "Ausgewählt",
         'save-selection': "Bestätigen",
@@ -48,6 +51,23 @@ const ChoiceScenario = {
     B: 'B',
     C: 'C',
     D: 'D',
+}
+
+const idToChoiceScenario = (choiceScenarioId) => {
+    switch (choiceScenarioId) {
+        case "c3c1d9e0":
+            return ChoiceScenario.A
+        case "00a78e00":
+            return ChoiceScenario.B
+        case "797f316f":
+            return ChoiceScenario.C
+        case "332dfc59":
+            return ChoiceScenario.D
+        default:
+            const errorMessage = "Technical issue with survey: unknown choice scenario ID [" + choiceScenarioId + "].";
+            window.alert(errorMessage)
+            throw errorMessage;
+    }
 }
 
 const Framing = {
@@ -64,6 +84,8 @@ const Type = {
 const itemSelection = (function () {
     let selectedItem
     let confirmedItem
+    let viewedOptOut = false
+    let confirmedItemChangeCount = 0
 
     class Item {
         constructor(id) {
@@ -79,6 +101,14 @@ const itemSelection = (function () {
         sessionStorage.setItem('confirmedItem', JSON.stringify(confirmedItem))
     };
 
+    const saveViewedOptOut = () => {
+        sessionStorage.setItem('viewedOptOut', JSON.stringify(viewedOptOut))
+    };
+
+    const saveConfirmedItemChangeCount = () => {
+        sessionStorage.setItem('confirmedItemChangeCount', JSON.stringify(confirmedItemChangeCount))
+    };
+
     const loadSelectedItem = () => {
         selectedItem = JSON.parse(sessionStorage.getItem('selectedItem'))
     };
@@ -87,12 +117,28 @@ const itemSelection = (function () {
         confirmedItem = JSON.parse(sessionStorage.getItem('confirmedItem'))
     };
 
+    const loadViewedOptOut = () => {
+        viewedOptOut = JSON.parse(sessionStorage.getItem("viewedOtpOut"))
+    }
+
+    const loadConfirmedItemChangeCount = () => {
+        confirmedItemChangeCount = JSON.parse(sessionStorage.getItem("confirmedItemChangeCount"))
+    }
+
     if (sessionStorage.getItem("selectedItem") != null) {
         loadSelectedItem()
     }
 
     if (sessionStorage.getItem("confirmedItem") != null) {
         loadConfirmedItem()
+    }
+
+    if (sessionStorage.getItem("viewedOtpOut") != null) {
+        loadViewedOptOut()
+    }
+
+    if (sessionStorage.getItem("confirmedItemChangeCount") != null) {
+        loadConfirmedItemChangeCount()
     }
 
     const obj = {}
@@ -108,13 +154,27 @@ const itemSelection = (function () {
         saveConfirmedItem()
     }
 
-    obj.selectedItem = () => selectedItem
+    obj.markViewedOptOut = () => {
+        viewedOptOut = true
+        saveViewedOptOut()
+    }
 
-    obj.confirmedItem = () => confirmedItem
+    obj.incrementConfirmedItemChangeCount = () => {
+        confirmedItemChangeCount++
+        saveConfirmedItemChangeCount()
+    }
 
     obj.storeChoiceScenarioProps = (props) => {
         sessionStorage.setItem('props', JSON.stringify(props))
     }
+
+    obj.selectedItem = () => selectedItem
+
+    obj.confirmedItem = () => confirmedItem
+
+    obj.viewedOptOut = () => viewedOptOut
+
+    obj.confirmedItemChangeCount = () => confirmedItemChangeCount
 
     obj.choiceScenarioProps = () => {
         return JSON.parse(sessionStorage.getItem('props'))
@@ -136,24 +196,66 @@ $('.close-modal').click(function (_) {
 })
 
 $('.save-item').click(function (_) {
+    if (itemSelection.selectedItem().id !== itemSelection.confirmedItem().id) {
+        itemSelection.incrementConfirmedItemChangeCount()
+    }
     itemSelection.confirmItem(itemSelection.selectedItem().id)
     displayConfirmed(itemSelection.choiceScenarioProps())
 })
 
 $('.open-modal').click(function (_) {
+    if (!itemSelection.viewedOptOut()) {
+        itemSelection.markViewedOptOut()
+    }
     displaySelected()
 })
 
-function toQualtrixUrl(confirmedType, choiceScenario) {
-    return getTargetUrl() + toQualtrixParam(confirmedType) + "&" + "ChoiceScenario=" + choiceScenario;
+function toQualtrixUrl(surveyId, confirmedType, choiceScenario, consentSessionId, viewedOptOut, choiceChangeCount) {
+    return getTargetUrl()
+        + surveyId
+        + "?"
+        + toQualtrixParam(confirmedType)
+        + "&ChoiceScenario=" + choiceScenario
+        + "&ConsentSessionID=" + consentSessionId
+        + "&Viewed=" + viewedOptOut
+        + "&Count=" + choiceChangeCount;
 }
+
+const isValidConsentNonce = () => getParameterByName(consentNonceQueryParam) === "e4c2790346bf4cbca22b961a324094ae";
 
 $('.checkout').click(function (event) {
     event.preventDefault()
-    const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, itemSelection.choiceScenarioProps())
-    const choiceScenario = getParameterByName(choiceScenarioQueryParam)
-    const win = window.open(toQualtrixUrl(confirmedType, choiceScenario), '_self')
-    win.focus()
+    try {
+        if (!isValidConsentNonce()) {
+            window.alert("Consent nonce required to submit choice.")
+            return;
+        }
+        const currentProps = itemSelection.choiceScenarioProps();
+        const choiceScenario = currentProps["choiceScenario"]
+        if (choiceScenario !== ChoiceScenario.A && choiceScenario !== ChoiceScenario.B && choiceScenario !== ChoiceScenario.C && choiceScenario !== ChoiceScenario.D) {
+            window.alert("Invalid choice scenario [" + choiceScenario + "]")
+            return;
+        }
+        const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, currentProps)
+        const consentSessionId = getParameterByName(consentSessionIdQueryParam)
+        const surveyId = currentProps["surveyId"]
+        const win = window.open(
+            toQualtrixUrl(
+                surveyId,
+                confirmedType,
+                choiceScenario,
+                consentSessionId,
+                itemSelection.viewedOptOut(),
+                itemSelection.confirmedItemChangeCount()
+            ),
+            '_self'
+        )
+        win.focus()
+    } catch (e) {
+        const errorMessage = "Technical issue with survey: failed to submit result"
+        console.error(errorMessage, e)
+        window.alert(errorMessage)
+    }
 })
 
 const getConfirmedType = (id, props) => {
@@ -173,9 +275,9 @@ const toQualtrixParam = (type) => {
 
 const getTargetUrl = () => {
     if (isPreviewMode) {
-        return qualtrixUrlPreviewMode
+        return qualtrixBaseUrlPreviewMode
     } else {
-        return qualtrixUrl
+        return qualtrixBaseUrl
     }
 }
 
@@ -209,7 +311,7 @@ const displaySelected = () => {
         }
     }
 
-    let selectedItemId = itemSelection.selectedItem().id
+    const selectedItemId = itemSelection.selectedItem().id
     displaySelectedButton(selectedItemId)
     displaySelectedCard(selectedItemId)
 }
@@ -217,21 +319,21 @@ const displaySelected = () => {
 const displayConfirmed = (props) => {
     const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, props)
     const card = document.querySelector('[data-id=menu-card-body]')
-    let title = card.querySelector('.card-title');
-    let description = card.querySelector('[data-id=menu-description-text]');
-    let ratherHave = card.querySelector('[data-id=rather-have-link]');
+    const title = card.querySelector('.card-title')
+    const description = card.querySelector('[data-id=menu-description-text]')
+    const ratherHave = card.querySelector('[data-id=rather-have-link]')
     if (confirmedType === Type.Veggie) {
         $(title).html(loc("veggie-dish-name"))
-        $(description).html(loc("veggie") + " " + loc("served-with"))
+        $(description).html(loc("veggie") + ". " + loc("served-with"))
         $(ratherHave).html(loc("meat") + "?")
     } else if (confirmedType === Type.Meat) {
         $(title).html(loc("pork-dish-name"))
-        $(description).html(loc("meat") + " " + loc("served-with"))
+        $(description).html(loc("meat") + ". " + loc("served-with"))
         $(ratherHave).html(loc("veggie") + "?")
     }
 }
 
-const loc = tag => translations[locale][tag];
+const loc = tag => translations[locale][tag]
 
 const displayOptions = (props) => {
     const displayOption = (id, type) => {
@@ -262,7 +364,7 @@ const displayFramingModal = (props) => {
     }
 
     const option = props[option1Selector]
-    const framingModal = document.querySelector('[data-id=framing-modal]');
+    const framingModal = document.querySelector('[data-id=framing-modal]')
     switch (option.framing) {
         case Framing.Taste:
             displayFraming(framingModal, loc("preselected-taste"))
@@ -287,7 +389,7 @@ const veggieDefaultTasteFraming = () => {
     }
     props["confirmed"] = option1Selector
     return props
-};
+}
 
 const veggieDefaultSustainabilityFraming = () => {
     const props = {}
@@ -301,7 +403,7 @@ const veggieDefaultSustainabilityFraming = () => {
     }
     props["confirmed"] = option1Selector
     return props
-};
+}
 
 const veggieDefaultNoFraming = () => {
     const props = {}
@@ -315,7 +417,7 @@ const veggieDefaultNoFraming = () => {
     }
     props["confirmed"] = option1Selector
     return props
-};
+}
 
 const meatDefaultNoFraming = () => {
     const props = {}
@@ -331,7 +433,7 @@ const meatDefaultNoFraming = () => {
     return props
 };
 
-const setPropsForChoiceScenario = (choiceScenario) => {
+const setPropsByChoiceScenario = (choiceScenario) => {
     switch (choiceScenario) {
         case ChoiceScenario.A:
             return veggieDefaultTasteFraming()
@@ -342,9 +444,18 @@ const setPropsForChoiceScenario = (choiceScenario) => {
         case ChoiceScenario.D:
             return meatDefaultNoFraming()
         default:
-            console.log("unknown choice scenario")
-            return veggieDefaultTasteFraming()
+            const errorMessage = "Technical issue with survey: unknown choice scenario [" + choiceScenario + "].";
+            window.alert(errorMessage)
+            throw errorMessage;
     }
+}
+
+const withMetadata = (props) => {
+    props["consentNonce"] = getParameterByName(consentNonceQueryParam)
+    props["consentSessionId"] = getParameterByName(consentSessionIdQueryParam)
+    props["surveyId"] = getParameterByName(surveyIdQueryParam)
+    props["choiceScenario"] = choiceScenario
+    return props
 }
 
 const getParameterByName = (name, url = window.location.href) => {
@@ -367,23 +478,24 @@ const localizeElement = element => {
     element.innerText = translations[locale][key];
 };
 
-choiceScenario = getParameterByName(choiceScenarioQueryParam)
-const props = setPropsForChoiceScenario(choiceScenario)
+const canonicalize = (choiceScenarioParam) => {
+    return choiceScenarioParam.toLowerCase();
+}
+
+choiceScenario = idToChoiceScenario(canonicalize(getParameterByName(choiceScenarioQueryParam)))
+const props = withMetadata(setPropsByChoiceScenario(choiceScenario))
 itemSelection.storeChoiceScenarioProps(props)
 document.addEventListener("DOMContentLoaded", () => {
-    // TODO empty/unknown choice scenario
     displayFramingModal(props)
     displayOptions(props)
     if (props.confirmed !== null) {
         itemSelection.confirmItem(props.confirmed)
     }
-    // TODO fix me
     try {
         displaySelected();
     } catch (error) {
         console.error(error);
     }
-    // TODO fix me
     try {
         displayConfirmed(props)
     } catch (error) {
