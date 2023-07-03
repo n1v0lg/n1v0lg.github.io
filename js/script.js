@@ -1,4 +1,4 @@
-const isPreviewMode = false
+const isPreviewMode = true
 const qualtrixBaseUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/'
 const qualtrixBaseUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/'
 
@@ -10,59 +10,41 @@ const consentNonceQueryParam = 'consentNonce';
 const consentSessionIdQueryParam = 'consentSessionID';
 const surveyIdQueryParam = 'surveyID';
 
-const locale = 'de';
+const locale = 'en';
 const translations = {
     'en': {
-        'veggie-dish-name': 'Veggie sausage and onion skewers',
-        'pork-dish-name': 'Pork sausage and onion skewers',
-        'served-with': 'served with Greek orzo-pasta salad and tomato sauce.',
-        'veggie': 'Plant-based sausage',
-        'meat': 'Pork sausage',
-        'hey-there': "They there 👋",
-        'select-sausage': "Select sausage",
-        'rather-have': "Rather have a ",
-        'preselected-taste': "We have pre-selected the tastiest protein option for you. Enjoy!",
-        'preselected-sust': "We have pre-selected the most environmentally-friendly protein option for you. Enjoy!",
+        'veggie': 'Plant-based nuggets',
+        'tofu': 'Tofu nuggets',
+        'meat': 'Chicken nuggets',
+        'veggie-description': 'made with soy',
+        'tofu-description': 'made with soy',
+        'meat-description': 'made with chicken',
         'select': "Select",
         'selected': "Selected",
-        'save-selection': "Save selection",
+        'complete-checkout': "Complete checkout",
         'cancel': "Cancel",
-    },
-    "de": {
-        'veggie-dish-name': 'Spieße mit Zwiebeln und Bratwurst auf Pflanzenbasis',
-        'pork-dish-name': 'Spieße mit Zwiebeln und Bratwurst vom Schwein',
-        'served-with': 'Dazu griechischer Orzopastasalat und Tomatensoße.',
-        'veggie': 'Bratwurst auf Erbsenbasis',
-        'meat': 'Bratwurst vom Schwein',
-        'hey-there': "Hallo 👋",
-        'select-sausage': "Auswahl",
-        'rather-have': "Lieber eine ",
-        'preselected-taste': "Wir haben die leckerste Bratwurst für dich ausgewählt. Guten Appetit!",
-        'preselected-sust': "Wir haben die nachhaltigste Bratwurst für dich ausgewählt. Guten Appetit!",
-        'select': "Auswählen",
-        'selected': "Ausgewählt",
-        'save-selection': "Bestätigen",
-        'cancel': "Abbrechen",
-    },
+        'your-current-order': "Your current order: ",
+        'please-select-item': "Please select an item first.",
+        'tasty-framing': "The tastier choice!",
+        'natural-framing': "The natural choice!",
+    }
 };
 
 const ChoiceScenario = {
     A: 'A',
     B: 'B',
-    C: 'C',
-    D: 'D',
+    C: 'C'
 }
 
 const idToChoiceScenario = (choiceScenarioId) => {
+    // TODO change these
     switch (choiceScenarioId) {
-        case "c3c1d9e0":
+        case "a":
             return ChoiceScenario.A
-        case "00a78e00":
+        case "b":
             return ChoiceScenario.B
-        case "797f316f":
+        case "c":
             return ChoiceScenario.C
-        case "332dfc59":
-            return ChoiceScenario.D
         default:
             const errorMessage = "Technical issue with survey: unknown choice scenario ID [" + choiceScenarioId + "].";
             window.alert(errorMessage)
@@ -71,21 +53,20 @@ const idToChoiceScenario = (choiceScenarioId) => {
 }
 
 const Framing = {
-    Taste: 'Taste',
-    Sustainability: 'Sustainability',
+    Tasty: 'Tasty',
+    Natural: 'Natural',
     None: 'None'
 }
 
 const Type = {
     Veggie: 'Veggie',
+    Tofu: 'Tofu',
     Meat: 'Meat'
 }
 
 const itemSelection = (function () {
     let selectedItem
-    let confirmedItem
-    let viewedOptOut = false
-    let confirmedItemChangeCount = 0
+    let changeCount = 0
 
     class Item {
         constructor(id) {
@@ -97,48 +78,24 @@ const itemSelection = (function () {
         sessionStorage.setItem('selectedItem', JSON.stringify(selectedItem))
     };
 
-    const saveConfirmedItem = () => {
-        sessionStorage.setItem('confirmedItem', JSON.stringify(confirmedItem))
-    };
-
-    const saveViewedOptOut = () => {
-        sessionStorage.setItem('viewedOptOut', JSON.stringify(viewedOptOut))
-    };
-
-    const saveConfirmedItemChangeCount = () => {
-        sessionStorage.setItem('confirmedItemChangeCount', JSON.stringify(confirmedItemChangeCount))
+    const saveChangeCount = () => {
+        sessionStorage.setItem('changeCount', JSON.stringify(changeCount))
     };
 
     const loadSelectedItem = () => {
         selectedItem = JSON.parse(sessionStorage.getItem('selectedItem'))
     };
 
-    const loadConfirmedItem = () => {
-        confirmedItem = JSON.parse(sessionStorage.getItem('confirmedItem'))
-    };
-
-    const loadViewedOptOut = () => {
-        viewedOptOut = JSON.parse(sessionStorage.getItem("viewedOtpOut"))
-    }
-
-    const loadConfirmedItemChangeCount = () => {
-        confirmedItemChangeCount = JSON.parse(sessionStorage.getItem("confirmedItemChangeCount"))
+    const loadChangeCount = () => {
+        changeCount = JSON.parse(sessionStorage.getItem("changeCount"))
     }
 
     if (sessionStorage.getItem("selectedItem") != null) {
         loadSelectedItem()
     }
 
-    if (sessionStorage.getItem("confirmedItem") != null) {
-        loadConfirmedItem()
-    }
-
-    if (sessionStorage.getItem("viewedOtpOut") != null) {
-        loadViewedOptOut()
-    }
-
-    if (sessionStorage.getItem("confirmedItemChangeCount") != null) {
-        loadConfirmedItemChangeCount()
+    if (sessionStorage.getItem("changeCount") != null) {
+        loadChangeCount()
     }
 
     const obj = {}
@@ -148,20 +105,9 @@ const itemSelection = (function () {
         saveSelectedItem()
     }
 
-    obj.confirmItem = id => {
-        obj.selectItem(id)
-        confirmedItem = new Item(id)
-        saveConfirmedItem()
-    }
-
-    obj.markViewedOptOut = () => {
-        viewedOptOut = true
-        saveViewedOptOut()
-    }
-
-    obj.incrementConfirmedItemChangeCount = () => {
-        confirmedItemChangeCount++
-        saveConfirmedItemChangeCount()
+    obj.incrementChangeCount = () => {
+        changeCount++
+        saveChangeCount()
     }
 
     obj.storeChoiceScenarioProps = (props) => {
@@ -170,11 +116,7 @@ const itemSelection = (function () {
 
     obj.selectedItem = () => selectedItem
 
-    obj.confirmedItem = () => confirmedItem
-
-    obj.viewedOptOut = () => viewedOptOut
-
-    obj.confirmedItemChangeCount = () => confirmedItemChangeCount
+    obj.changeCount = () => changeCount
 
     obj.choiceScenarioProps = () => {
         return JSON.parse(sessionStorage.getItem('props'))
@@ -186,44 +128,62 @@ const itemSelection = (function () {
 $('.select-item').click(function (event) {
     event.preventDefault()
     const id = $(this).data('id')
+    // TODO double-check this
+    if (!itemSelection.selectedItem() || itemSelection.selectedItem().id !== id) {
+        itemSelection.incrementChangeCount()
+    }
     itemSelection.selectItem(id)
     displaySelected()
 })
 
-$('.close-modal').click(function (_) {
-    // Reset to previously confirmed item
-    itemSelection.confirmItem(itemSelection.confirmedItem().id)
-})
+const toQualtrixUrl = (surveyId, selectedType, choiceScenario, consentSessionId, choiceChangeCount) =>
+    getTargetUrl()
+    + surveyId
+    + "?"
+    + toQualtrixParam(selectedType)
+    + "&ChoiceScenario=" + choiceScenario
+    + "&ConsentSessionID=" + consentSessionId
+    + "&Count=" + choiceChangeCount;
 
-$('.save-item').click(function (_) {
-    if (itemSelection.selectedItem().id !== itemSelection.confirmedItem().id) {
-        itemSelection.incrementConfirmedItemChangeCount()
+const isValidConsentNonce = () => getParameterByName(consentNonceQueryParam) === "29aeb38449e442c28e052d5efeb34c31";
+
+const toLocTag = (type) => {
+    switch (type) {
+        case Type.Veggie:
+            return "veggie"
+        case Type.Tofu:
+            return "tofu"
+        case Type.Meat:
+            return "meat"
     }
-    itemSelection.confirmItem(itemSelection.selectedItem().id)
-    displayConfirmed(itemSelection.choiceScenarioProps())
-})
-
-$('.open-modal').click(function (_) {
-    if (!itemSelection.viewedOptOut()) {
-        itemSelection.markViewedOptOut()
-    }
-    displaySelected()
-})
-
-function toQualtrixUrl(surveyId, confirmedType, choiceScenario, consentSessionId, viewedOptOut, choiceChangeCount) {
-    return getTargetUrl()
-        + surveyId
-        + "?"
-        + toQualtrixParam(confirmedType)
-        + "&ChoiceScenario=" + choiceScenario
-        + "&ConsentSessionID=" + consentSessionId
-        + "&Viewed=" + viewedOptOut
-        + "&Count=" + choiceChangeCount;
 }
 
-const isValidConsentNonce = () => getParameterByName(consentNonceQueryParam) === "e4c2790346bf4cbca22b961a324094ae";
+const displaySelectedOnCheckoutModal = (props) => {
+    const modal = document.querySelector('[data-id=confirm-item-modal]')
+    const description = modal.querySelector('[data-id=selected-item-text]')
+    const selectedType = getSelectedType(itemSelection.selectedItem().id, props)
+    const selectedTypeLocTag = toLocTag(selectedType)
+    $(description).html(loc(selectedTypeLocTag))
+}
 
 $('.checkout').click(function (event) {
+    event.preventDefault()
+    try {
+        if (!itemSelection.selectedItem()) {
+            $('#please-select-item-modal').modal('show');
+        } else {
+            $('#confirm-item-modal').modal('show');
+            // TODO double-check no race condition with modal being shown
+            displaySelectedOnCheckoutModal(props)
+        }
+    } catch (e) {
+        const errorMessage = "Technical issue with survey: failed to submit result"
+        console.error(errorMessage, e)
+        window.alert(errorMessage)
+    }
+})
+
+$('.confirm').click(function (event) {
     event.preventDefault()
     try {
         if (!isValidConsentNonce()) {
@@ -232,21 +192,20 @@ $('.checkout').click(function (event) {
         }
         const currentProps = itemSelection.choiceScenarioProps();
         const choiceScenario = currentProps["choiceScenario"]
-        if (choiceScenario !== ChoiceScenario.A && choiceScenario !== ChoiceScenario.B && choiceScenario !== ChoiceScenario.C && choiceScenario !== ChoiceScenario.D) {
+        if (choiceScenario !== ChoiceScenario.A && choiceScenario !== ChoiceScenario.B && choiceScenario !== ChoiceScenario.C) {
             window.alert("Invalid choice scenario [" + choiceScenario + "]")
             return;
         }
-        const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, currentProps)
+        const selectedType = getSelectedType(itemSelection.selectedItem().id, currentProps)
         const consentSessionId = getParameterByName(consentSessionIdQueryParam)
         const surveyId = currentProps["surveyId"]
         const win = window.open(
             toQualtrixUrl(
                 surveyId,
-                confirmedType,
+                selectedType,
                 choiceScenario,
                 consentSessionId,
-                itemSelection.viewedOptOut(),
-                itemSelection.confirmedItemChangeCount()
+                itemSelection.changeCount()
             ),
             '_self'
         )
@@ -258,16 +217,20 @@ $('.checkout').click(function (event) {
     }
 })
 
-const getConfirmedType = (id, props) => {
+const getSelectedType = (id, props) => {
     return props[id].type
 }
 
 const toQualtrixParam = (type) => {
+    // TODO finalize once types are there
     switch (type) {
         case Type.Veggie:
             return "SelectedItem=Veggie"
+        case Type.Tofu:
+            return "SelectedItem=Veggie"
         case Type.Meat:
             return "SelectedItem=Meat"
+        // TODO this is an error
         default:
             return ""
     }
@@ -311,142 +274,129 @@ const displaySelected = () => {
         }
     }
 
-    const selectedItemId = itemSelection.selectedItem().id
+    // TODO hack hack hack + I hate JS
+    const selectedItemId = itemSelection.selectedItem() ? itemSelection.selectedItem().id : null
     displaySelectedButton(selectedItemId)
     displaySelectedCard(selectedItemId)
-}
-
-const displayConfirmed = (props) => {
-    const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, props)
-    const card = document.querySelector('[data-id=menu-card-body]')
-    const title = card.querySelector('.card-title')
-    const description = card.querySelector('[data-id=menu-description-text]')
-    const ratherHave = card.querySelector('[data-id=rather-have-link]')
-    if (confirmedType === Type.Veggie) {
-        $(title).html(loc("veggie-dish-name"))
-        $(description).html(loc("veggie") + ". " + loc("served-with"))
-        $(ratherHave).html(loc("meat") + "?")
-    } else if (confirmedType === Type.Meat) {
-        $(title).html(loc("pork-dish-name"))
-        $(description).html(loc("meat") + ". " + loc("served-with"))
-        $(ratherHave).html(loc("veggie") + "?")
-    }
 }
 
 const loc = tag => translations[locale][tag]
 
 const displayOptions = (props) => {
-    const displayOption = (id, type) => {
+    const displayOption = (id, type, framing) => {
         const card = document.querySelector('[data-id=' + getCardId(id) + ']')
+
+        const image = card.querySelector('[data-id=image]')
+        $(image).attr("src", "images/" + typeToImageSource(type))
+
         const label = card.querySelector('[data-id=label]')
-        $(label).html(typeHtml(type))
+        $(label).html(labelHtml(type, framing))
+
+        const description = card.querySelector('[data-id=description]')
+        $(description).html(descriptionHtml(type))
     }
 
-    const typeHtml = (type) => {
+    const typeToImageSource = (type) => {
+        switch (type) {
+            case Type.Veggie:
+                // TODO
+                return 'tofu.JPG'
+            case Type.Tofu:
+                return 'tofu.JPG'
+            case Type.Meat:
+                return 'chicken.JPG'
+        }
+    }
+
+    const framingHtml = (framing) => {
+        switch (framing) {
+            case Framing.Tasty:
+                return ' <span class="badge badge-success">' + loc("tasty-framing") + '</span>'
+            case Framing.Natural:
+                return ' <span class="badge badge-success">' + loc("natural-framing") + '</span>'
+            case Framing.None:
+                return ""
+        }
+    }
+
+    const labelHtml = (type, framing) => {
+        // TODO re-use to toLocTag and clean up
         if (type === Type.Veggie) {
-            return loc("veggie")
+            return loc("veggie") + framingHtml(framing)
+        } else if (type === Type.Tofu) {
+            return loc("tofu") + framingHtml(framing)
         } else if (type === Type.Meat) {
-            return loc("meat")
+            return loc("meat") + framingHtml(framing)
+        }
+    }
+
+    const descriptionHtml = (type) => {
+        if (type === Type.Veggie) {
+            return loc("veggie-description")
+        } else if (type === Type.Tofu) {
+            return loc("tofu-description")
+        } else if (type === Type.Meat) {
+            return loc("meat-description")
         }
     }
 
     const option1 = props[option1Selector]
-    displayOption(option1Selector, option1.type)
+    displayOption(option1Selector, option1.type, option1.framing)
     const option2 = props[option2Selector]
-    displayOption(option2Selector, option2.type)
+    displayOption(option2Selector, option2.type, option2.framing)
 }
 
-const displayFramingModal = (props) => {
-    const displayFraming = (framingModal, framingText) => {
-        const text = framingModal.querySelector('[data-id=framing-text]')
-        $(text).html(framingText)
-        $(framingModal).modal('show')
-    }
-
-    const option = props[option1Selector]
-    const framingModal = document.querySelector('[data-id=framing-modal]')
-    switch (option.framing) {
-        case Framing.Taste:
-            displayFraming(framingModal, loc("preselected-taste"))
-            return
-        case Framing.Sustainability:
-            displayFraming(framingModal, loc("preselected-sust"))
-            return
-        default:
-            return
-    }
-}
-
-const veggieDefaultTasteFraming = () => {
+const tastyFraming = (option1Type, option2Type) => {
     const props = {}
     props[option1Selector] = {
-        type: Type.Veggie,
-        framing: Framing.Taste
+        type: option1Type,
+        framing: Framing.Tasty
     }
     props[option2Selector] = {
-        type: Type.Meat,
+        type: option2Type,
         framing: Framing.None
     }
-    props["confirmed"] = option1Selector
     return props
 }
 
-const veggieDefaultSustainabilityFraming = () => {
+const naturalFraming = (option1Type, option2Type) => {
     const props = {}
     props[option1Selector] = {
-        type: Type.Veggie,
-        framing: Framing.Sustainability
+        type: option1Type,
+        framing: Framing.Natural
     }
     props[option2Selector] = {
-        type: Type.Meat,
+        type: option2Type,
         framing: Framing.None
     }
-    props["confirmed"] = option1Selector
     return props
 }
 
-const veggieDefaultNoFraming = () => {
+const noFraming = (option1Type, option2Type) => {
     const props = {}
     props[option1Selector] = {
-        type: Type.Veggie,
+        type: option1Type,
         framing: Framing.None
     }
     props[option2Selector] = {
-        type: Type.Meat,
+        type: option2Type,
         framing: Framing.None
     }
-    props["confirmed"] = option1Selector
     return props
 }
 
-const meatDefaultNoFraming = () => {
-    const props = {}
-    props[option1Selector] = {
-        type: Type.Meat,
-        framing: Framing.None
-    }
-    props[option2Selector] = {
-        type: Type.Veggie,
-        framing: Framing.None
-    }
-    props["confirmed"] = option1Selector
-    return props
-};
-
-const setPropsByChoiceScenario = (choiceScenario) => {
+const setPropsByChoiceScenario = (choiceScenario, option1Type, option2Type) => {
     switch (choiceScenario) {
         case ChoiceScenario.A:
-            return veggieDefaultTasteFraming()
+            return tastyFraming(option1Type, option2Type)
         case ChoiceScenario.B:
-            return veggieDefaultSustainabilityFraming()
+            return naturalFraming(option1Type, option2Type)
         case ChoiceScenario.C:
-            return veggieDefaultNoFraming()
-        case ChoiceScenario.D:
-            return meatDefaultNoFraming()
+            return noFraming(option1Type, option2Type)
         default:
-            const errorMessage = "Technical issue with survey: unknown choice scenario [" + choiceScenario + "].";
+            const errorMessage = "Technical issue with survey: unknown choice scenario [" + choiceScenario + "]."
             window.alert(errorMessage)
-            throw errorMessage;
+            throw errorMessage
     }
 }
 
@@ -455,6 +405,7 @@ const withMetadata = (props) => {
     props["consentSessionId"] = getParameterByName(consentSessionIdQueryParam)
     props["surveyId"] = getParameterByName(surveyIdQueryParam)
     props["choiceScenario"] = choiceScenario
+    props["selected"] = null
     return props
 }
 
@@ -470,7 +421,7 @@ const getParameterByName = (name, url = window.location.href) => {
 const localize = () => {
     document
         .querySelectorAll("[data-i18n-key]")
-        .forEach(localizeElement);
+        .forEach(localizeElement)
 }
 
 const localizeElement = element => {
@@ -483,21 +434,19 @@ const canonicalize = (choiceScenarioParam) => {
 }
 
 choiceScenario = idToChoiceScenario(canonicalize(getParameterByName(choiceScenarioQueryParam)))
-const props = withMetadata(setPropsByChoiceScenario(choiceScenario))
+// TODO randomize here or read from parameters
+option1Veggie = true
+option1Type = option1Veggie ? Type.Veggie : Type.Meat
+option2Type = option1Veggie ? Type.Meat : Type.Veggie
+const props = withMetadata(setPropsByChoiceScenario(choiceScenario, option1Type, option2Type))
 itemSelection.storeChoiceScenarioProps(props)
 document.addEventListener("DOMContentLoaded", () => {
-    displayFramingModal(props)
     displayOptions(props)
-    if (props.confirmed !== null) {
-        itemSelection.confirmItem(props.confirmed)
+    if (props.selected !== null) {
+        itemSelection.selectItem(props.selected)
     }
     try {
         displaySelected();
-    } catch (error) {
-        console.error(error);
-    }
-    try {
-        displayConfirmed(props)
     } catch (error) {
         console.error(error);
     }
